@@ -283,7 +283,7 @@
 								 aria-expanded="false">Shop</a>
 								<ul class="dropdown-menu">
 									<li class="nav-item"><a class="nav-link" href="{% url 'category' %}">All Action Figures</a></li>
-									<li class="nav-item"><a class="nav-link" href="#">New Arivals</a></li>
+									<li class="nav-item"><a class="nav-link" href="{% new_ar%}">New Arivals</a></li>
 									<li class="nav-item"><a class="nav-link" href="#">Best Sellers</a></li>
 									<li class="nav-item"><a class="nav-link" href="#">On Sale</a></li>
 								</ul>
@@ -333,8 +333,9 @@
 		</div>
 		<div class="search_input" id="search_input_box">
 			<div class="container">
-				<form class="d-flex justify-content-between">
-					<input type="text" class="form-control" id="search_input" placeholder="Search Here">
+				<form class="d-flex justify-content-between" action="{% url 'category' %}" method="GET">
+					<input type="text" class="form-control" id="search_input" name="search" 
+						   placeholder="Search Here" value="{{ search_query|default:'' }}">
 					<button type="submit" class="btn"></button>
 					<span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
 				</form>
