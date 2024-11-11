@@ -554,9 +554,6 @@
 										{% else %}
 											<p class="product-stock out-of-stock">Out of Stock</p>
 										{% endif %}
-										{% if page_title == 'New Arrivals' %}
-											<p class="new-arrival-date">Added on: {{ variant.product.created_at|date:"F d, Y" }}</p>
-										{% endif %}
 										{% if variant.product.offer_type != 'none' or variant.product.category.offer_type != 'none' %}
 											<p class="offer-tag">Special Offer!</p>
 										{% endif %}
