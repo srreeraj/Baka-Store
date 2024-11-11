@@ -1,0 +1,116 @@
+{% extends 'Admin/base_admin.html' %}
+
+{% block content %}
+<div class="delete-confirmation-container">
+    <div class="delete-card">
+        <div class="delete-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h2 class="delete-title">Confirm Deletion</h2>
+        <p class="delete-message">Are you absolutely sure you want to delete the category:</p>
+        <p class="category-name">"{{ category.name }}"?</p>
+        <p class="warning-text">This action cannot be undone!</p>
+        
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <div class="button-group">
+                <button type="submit" class="delete-btn">
+                    <i class="fas fa-trash-alt"></i> Delete
+                </button>
+                <a href="{% url 'category-list' %}" class="cancel-btn">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .delete-confirmation-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        background-color: #f5f5f5;
+    }
+    
+    .delete-card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        text-align: center;
+        max-width: 400px;
+        width: 100%;
+    }
+    
+    .delete-icon {
+        font-size: 3rem;
+        color: #ff6b6b;
+        margin-bottom: 1rem;
+    }
+    
+    .delete-title {
+        color: #333;
+        margin-bottom: 1rem;
+    }
+    
+    .delete-message {
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    
+    .category-name {
+        font-weight: bold;
+        color: #333;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .warning-text {
+        color: #ff6b6b;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+    }
+    
+    .delete-form {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .button-group {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .delete-btn, .cancel-btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .delete-btn {
+        background-color: #ff6b6b;
+        color: white;
+    }
+    
+    .delete-btn:hover {
+        background-color: #ff4757;
+    }
+    
+    .cancel-btn {
+        background-color: #dfe6e9;
+        color: #2d3436;
+    }
+    
+    .cancel-btn:hover {
+        background-color: #b2bec3;
+    }
+</style>
+{% endblock %}

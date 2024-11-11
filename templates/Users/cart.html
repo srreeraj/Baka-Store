@@ -1,0 +1,435 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zxx" class="no-js">
+
+<head>
+	<!-- Mobile Specific Meta -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Favicon-->
+	<link rel="shortcut icon" href="{% static 'img/logo2.png' %}">
+	<!-- Author Meta -->
+	<meta name="author" content="CodePixar">
+	<!-- Meta Description -->
+	<meta name="description" content="">
+	<!-- Meta Keyword -->
+	<meta name="keywords" content="">
+	<!-- meta character set -->
+	<meta charset="UTF-8">
+	<!-- Site Title -->
+	<title>Baka Store</title>
+
+	<!--
+            CSS
+            ============================================= -->
+	<link rel="stylesheet" href="{% static 'css/linearicons.css' %}">
+	<link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/themify-icons.css' %}">
+	<link rel="stylesheet" href="{% static 'css/nice-select.css' %}">
+	<link rel="stylesheet" href="{% static 'css/nouislider.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'css/main.css' %}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+	<style>
+        .single-product img {
+            width: 100%;
+            height: 350px; 
+            object-fit: cover;
+        }
+		.about-us-widget {
+			position: relative;
+			z-index: 1;
+			background: rgba(255, 255, 255, 0.108); 
+			padding: 20px;
+			border-radius: 10px;
+		}
+		
+		.about-us-widget::before,
+		.about-us-widget::after {
+			content: '';
+			position: absolute;
+			z-index: -1;
+			background-size: cover;
+			background-position: center;
+			width: 100px;
+			height: 100px;
+		}
+		
+		.about-us-widget::before {
+			background-image: url('{% static "img/pngegg.png" %}'); 
+			top: -20px;
+			left: -20px;
+		}
+		
+		.about-us-widget::after {
+			background-image: url('{% static "img/naruto.png" %}'); 
+			bottom: -20px;
+			right: -20px;
+		}
+		
+		.about-us-widget::before,
+		.about-us-widget::after {
+			opacity: 0.3; 
+			transform: rotate(-15deg); 
+			border-radius: 50%; 
+		}
+    </style>
+</head>
+
+<body id="category">
+
+	<!-- Start Header Area -->
+	<header class="header_area sticky-header">
+		<div class="main_menu">
+			<nav class="navbar navbar-expand-lg navbar-light main_box">
+				<div class="container">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<a class="navbar-brand logo_h d-flex align-items-center" href="{% url 'home' %}">
+						<img src="{% static 'img/logo2.png' %}" alt="Baka Store Logo" style="height: 4rem; width: 4rem; margin-right: 0.5rem;">
+						<p class="brand-text" style="font-size: 1.5rem; font-weight: bold; color: #333; margin: 0;">Baka Store</p>
+					</a>
+					
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+					 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+						<ul class="nav navbar-nav menu_nav ml-auto">
+							<li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+							<li class="nav-item submenu dropdown">
+								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+								 aria-expanded="false">Shop</a>
+								<ul class="dropdown-menu">
+									<li class="nav-item"><a class="nav-link" href="{% url 'category' %}">All Action Figures</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">New Arivals</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">Best Sellers</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">On Sale</a></li>
+								</ul>
+							</li>
+							<li class="nav-item submenu dropdown">
+								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+								 aria-expanded="false">Character Types</a>
+								<ul class="dropdown-menu">
+									<li class="nav-item"><a class="nav-link" href="#">Heroes</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">Villains</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">Sidekicks</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">Monsters</a></li>
+								</ul>
+							</li>
+							<li class="nav-item submenu dropdown">
+								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+								 aria-expanded="false">Account</a>
+								<ul class="dropdown-menu">
+									{% if user.is_authenticated %}
+            							<li class="nav-item">
+                							<a class="nav-link" href="{% url 'user-logout' %}">Logout</a>
+            							</li>
+										<li class="nav-item">
+                							<a class="nav-link" href="{% url 'user-logout' %}">Wishlist</a>
+            							</li>
+										<li class="nav-item">
+                							<a class="nav-link" href="{% url 'account_details' %}">Account Settings</a>
+            							</li>
+       	 							{% else %}
+            							<li class="nav-item">
+                							<a class="nav-link" href="{% url 'user-login' %}">Login</a>
+           	 							</li>
+        							{% endif %}
+								</ul>
+							</li>
+							<li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+						</ul>
+						<ul class="nav navbar-nav navbar-right active">
+							<li class="nav-item "><a href="{% url 'cart' %}" class="cart"><span class="ti-bag"></span></a></li>
+							<li class="nav-item">
+								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+		</div>
+		<div class="search_input" id="search_input_box">
+			<div class="container">
+				<form class="d-flex justify-content-between">
+					<input type="text" class="form-control" id="search_input" placeholder="Search Here">
+					<button type="submit" class="btn"></button>
+					<span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
+				</form>
+			</div>
+		</div>
+	</header>
+	<!-- End Header Area -->
+
+	<!-- Start Banner Area -->
+	<section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1>Shopping Cart</h1>
+                    <nav class="d-flex align-items-center">
+                        <a href="{% url 'home' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="{% url 'cart' %}">Cart</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+	<!-- End Banner Area -->
+	<section class="cart_area">
+		<div class="container">
+			<div class="cart_inner">
+				<div class="table-responsive">
+					<table class="table">
+						<thead>
+							<tr>
+								<th scope="col">Product</th>
+								<th scope="col">Price</th>
+								<th scope="col">Quantity</th>
+								<th scope="col">Total</th>
+								<th scope="col">Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for item in cart_items %}
+							<tr>
+								<td>
+									<div class="media">
+										<div class="d-flex">
+											<img src="{{ item.product.image1.url }}" alt="{{ item.product.name }}" style="width: 100px;">
+										</div>
+										<div class="media-body">
+											<p>{{ item.product.name }} - {{ item.variant.size }}</p>
+										</div>
+									</div>
+								</td>
+								<td>
+									{% if item.discounted_price < item.variant.price %}
+										<h5>
+											<span style="text-decoration: line-through; color: #790000;">
+												<i class="bi bi-currency-rupee"></i>₹{{ item.variant.price }}
+											</span>
+											<i class="bi bi-currency-rupee"></i>₹{{ item.discounted_price }}
+										</h5>
+									{% else %}
+										<h5><i class="bi bi-currency-rupee"></i>₹{{ item.variant.price }}</h5>
+									{% endif %}
+								</td>
+								<td>
+									<div class="product_count">
+										<input type="text" name="qty" id="sst{{ item.id }}" maxlength="12" value="{{ item.quantity }}" title="Quantity:"
+											class="input-text qty" data-item-id="{{ item.id }}" data-stock="{{ item.variant.stock }}" data-price="{{ item.variant.price }}">
+										<button class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
+										<button class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
+									</div>
+									<p class="error-message" id="error-{{ item.id }}" style="color: red; display: none;">Exceeds available stock</p>
+								</td>
+								<td>
+									<h5>
+										<i class="bi bi-currency-rupee"></i>₹
+										<span id="item-total-{{ item.id }}">
+											{% if item.discounted_total < item.total_price %}
+												<span style="text-decoration: line-through; color: #9c0000;">
+													{{ item.total_price }}
+												</span>
+												{{ item.discounted_total }}
+											{% else %}
+												{{ item.total_price }}
+											{% endif %}
+										</span>
+									</h5>
+								</td>
+								<td>
+									<a href="{% url 'remove-from-cart' item.id %}" class="btn btn-danger btn-sm">Remove</a>
+								</td>
+							</tr>
+							{% endfor %}
+							<tr>
+								<td></td>
+								<td></td>
+								<td>
+									<h5>Subtotal</h5>
+								</td>
+								<td>
+									<h5><i class="bi bi-currency-rupee"></i>₹<span id="cart-total">{{ total }}</span></h5>
+								</td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="row mt-5">
+				<div class="col-lg-6">
+					<div class="cart_buttons">
+						<a href="{% url 'category' %}" class="btn btn-outline-secondary">Continue Shopping</a>
+					</div>
+				</div>
+				<div class="col-lg-6 text-right">
+					<div class="cart_buttons">
+						<a href="{% url 'checkout' %}" class="btn btn-primary">Proceed to Checkout</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- start footer Area -->
+	<footer class="footer-area section_gap">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg">
+					<div class="single-footer-widget about-us-widget">
+						<h6>About Us</h6>
+						<p>
+							Welcome to Baka Store, your ultimate destination for anime action figures. We are passionate about bringing your favorite characters to life with high-quality figures. Our mission is to provide anime enthusiasts with a wide variety of collectibles, ensuring that every fan can find something they love. At Baka Store, we are committed to delivering exceptional products and customer service. Join us in celebrating the world of anime!
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="footer-bottom d-flex justify-content-center align-items-center flex-wrap">
+				<p class="footer-text m-0">
+					Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Baka Store
+				</p>
+			</div>
+			
+		</div>
+	</footer>
+	<!-- End footer Area -->
+	<script src="{% static 'js/vendor/jquery-2.2.4.min.js' %}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+	 crossorigin="anonymous"></script>
+	<script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/jquery.ajaxchimp.min.js' %}"></script>
+	<script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
+	<script src="{% static 'js/jquery.sticky.js' %}"></script>
+	<script src="{% static 'js/nouislider.min.js' %}"></script>
+	<script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+	<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+	<!--gmaps Js-->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
+	<script src="{% static 'js/gmaps.min.js' %}"></script>
+	<script src="{% static 'js/main.js' %}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			$.ajaxSetup({
+				headers: { "X-CSRFToken": '{{ csrf_token }}' }
+			});
+		
+			// Configure Toastr
+			toastr.options = {
+				"closeButton": true,
+				"debug": false,
+				"newestOnTop": false,
+				"progressBar": true,
+				"positionClass": "toast-top-right",
+				"preventDuplicates": false,
+				"onclick": null,
+				"showDuration": "300",
+				"hideDuration": "1000",
+				"timeOut": "5000",
+				"extendedTimeOut": "1000",
+				"showEasing": "swing",
+				"hideEasing": "linear",
+				"showMethod": "fadeIn",
+				"hideMethod": "fadeOut"
+			}
+		
+			function updateCartItem(itemId, quantity) {
+				return $.ajax({
+					url: "{% url 'update_cart_item' 0 %}".replace("0", itemId),
+					method: "POST",
+					data: {
+						"item_id": itemId,
+						"quantity": quantity,
+					}
+				});
+			}
+		
+			function formatPrice(price) {
+				return parseFloat(price).toFixed(2);
+			}
+		
+			function updateCartTotal() {
+				var cartTotal = 0;
+				$('span[id^="item-total-"]').each(function() {
+					// Remove ₹ symbol and any whitespace before parsing
+					var priceText = $(this).text().replace('₹', '').trim();
+					// If there's a discounted price, use the last number (the discounted price)
+					if (priceText.includes('through')) {
+						priceText = priceText.split(' ').pop();
+					}
+					var itemTotal = parseFloat(priceText);
+					if (!isNaN(itemTotal)) {
+						cartTotal += itemTotal;
+					}
+				});
+				$('#cart-total').text(formatPrice(cartTotal));
+			}
+		
+			$('.product_count input').on('change', function() {
+				var $input = $(this);
+				var itemId = $input.data('item-id');
+				var quantity = parseInt($input.val());
+				var stock = parseInt($input.data('stock'));
+				var price = parseFloat($input.data('price'));
+				var $row = $input.closest('tr');
+				var productName = $row.find('.media-body p').text();
+		
+				// Validate quantity
+				if (quantity > stock) {
+					$('#error-' + itemId).show();
+					$input.val(stock);
+					quantity = stock;
+					toastr.warning('Quantity set to maximum available stock for ' + productName);
+				} else if (quantity < 1) {
+					$input.val(1);
+					quantity = 1;
+					toastr.warning('Minimum quantity is 1 for ' + productName);
+				} else {
+					$('#error-' + itemId).hide();
+				}
+		
+				// Calculate new total
+				var itemTotal = quantity * price;
+		
+				// Update backend
+				updateCartItem(itemId, quantity)
+					.done(function(response) {
+						// Update item total
+						$('#item-total-' + itemId).text('₹' + formatPrice(response.item_total));
+						// Update cart total
+						$('#cart-total').text(formatPrice(response.cart_total));
+						toastr.success('Cart updated successfully');
+					})
+					.fail(function(jqXHR) {
+						toastr.error(jqXHR.responseJSON?.error || 'Error updating cart');
+						// Revert to previous quantity
+						$input.val($input.data('previous-value'));
+					});
+		
+				// Store current value for potential rollback
+				$input.data('previous-value', quantity);
+			});
+		
+			// Event listeners for quantity buttons
+			$('.increase.items-count').on('click', function() {
+				let $input = $(this).siblings('input.qty');
+				let quantity = parseInt($input.val()) + 1;
+				$input.val(quantity).trigger('change');
+			});
+		
+			$('.reduced.items-count').on('click', function() {
+				let $input = $(this).siblings('input.qty');
+				let quantity = Math.max(parseInt($input.val()) - 1, 1);
+				$input.val(quantity).trigger('change');
+			});
+		});						
+	</script>
+</body>
+
+</html>

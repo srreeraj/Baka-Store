@@ -1,0 +1,115 @@
+{% extends 'Admin/base_admin.html' %}
+
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-12">
+        <!-- Page header -->
+        <div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="mb-2 mb-lg-0">
+                    <h3 class="mb-0">Categories</h3>
+                </div>
+                <div>
+                    <a href="{% url 'add-category' %}" class="btn btn-primary">Add New Category</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search form -->
+<div class="row mt-4">
+    <div class="col-lg-12">
+        <form method="get" action="{% url 'category-list' %}">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Search categories" name="search" value="{{ request.GET.search }}">
+                <button class="btn btn-outline-secondary" type="submit">Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Categories Table -->
+<div class="row mt-4">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Category List</h4>
+            </div>
+            <div class="table-responsive">
+                <table class="table text-nowrap">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                        <tr>
+                            <td>{{ category.name }}</td>
+                            <td>{{ category.description }}</td>
+                            <td>{% if category.status == 'active' %}Active{% else %}Inactive{% endif %}</td>
+                            <td>
+                                <a href="{% url 'edit-category' category.id %}" class="btn btn-sm btn-primary">Edit</a>
+                                <a href="{% url 'delete-category' category.id %}?page={{ categories.number }}" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4">No categories found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pagination -->
+<!-- Pagination -->
+<div class="row mt-4">
+    <div class="col-lg-12">
+        {% if categories.paginator.num_pages > 1 %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if not categories.has_previous %}disabled{% endif %}">
+                    <a class="page-link" href="{% if categories.has_previous %}?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% else %}#{% endif %}" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item {% if not categories.has_previous %}disabled{% endif %}">
+                    <a class="page-link" href="{% if categories.has_previous %}?page={{ categories.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% else %}#{% endif %}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                
+                {% for i in categories.paginator.page_range %}
+                    {% if categories.number == i %}
+                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                    {% elif i > categories.number|add:'-3' and i < categories.number|add:'3' %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                
+                <li class="page-item {% if not categories.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{% if categories.has_next %}?page={{ categories.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% else %}#{% endif %}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item {% if not categories.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{% if categories.has_next %}?page={{ categories.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% else %}#{% endif %}" aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

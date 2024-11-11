@@ -1,0 +1,460 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zxx" class="no-js">
+
+<head>
+	<!-- Mobile Specific Meta -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Favicon-->
+	<link rel="shortcut icon" href="{% static 'img/logo2.png' %}">
+	<!-- Author Meta -->
+	<meta name="author" content="CodePixar">
+	<!-- Meta Description -->
+	<meta name="description" content="">
+	<!-- Meta Keyword -->
+	<meta name="keywords" content="">
+	<!-- meta character set -->
+	<meta charset="UTF-8">
+	<!-- Site Title -->
+	<title>Baka Store</title>
+
+	<!--
+            CSS
+            ============================================= -->
+	<link rel="stylesheet" href="{% static 'css/linearicons.css' %}">
+	<link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/themify-icons.css' %}">
+	<link rel="stylesheet" href="{% static 'css/nice-select.css' %}">
+	<link rel="stylesheet" href="{% static 'css/nouislider.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+	<style>
+        .single-product img {
+            width: 100%;
+            height: 350px; 
+            object-fit: cover;
+        }
+		.about-us-widget {
+			position: relative;
+			z-index: 1;
+			background: rgba(255, 255, 255, 0.108); 
+			padding: 20px;
+			border-radius: 10px;
+		}
+		
+		.about-us-widget::before,
+		.about-us-widget::after {
+			content: '';
+			position: absolute;
+			z-index: -1;
+			background-size: cover;
+			background-position: center;
+			width: 100px;
+			height: 100px;
+		}
+		
+		.about-us-widget::before {
+			background-image: url('{% static "img/pngegg.png" %}'); 
+			top: -20px;
+			left: -20px;
+		}
+		
+		.about-us-widget::after {
+			background-image: url('{% static "img/naruto.png" %}'); 
+			bottom: -20px;
+			right: -20px;
+		}
+		
+		.about-us-widget::before,
+		.about-us-widget::after {
+			opacity: 0.3; 
+			transform: rotate(-15deg); 
+			border-radius: 50%; 
+		}
+
+        .otaku-profile-area {
+            background: #f9f9f9;
+            padding: 2rem 0;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .otaku-menu {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .otaku-menu .menu-header {
+            margin-bottom: 2rem;
+        }
+        
+        .otaku-menu .menu-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+        
+        .otaku-menu h3 {
+            color: #333;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .otaku-nav {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .otaku-nav li {
+            margin-bottom: 1rem;
+        }
+        
+        .otaku-nav li a {
+            text-decoration: none;
+            font-size: 1rem;
+            color: #555;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        .otaku-nav li a .icon {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .otaku-nav li.active a,
+        .otaku-nav li a:hover {
+            background: #ffdd57;
+            color: #fff;
+        }
+        
+        .wishlist-item {
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .wishlist-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-right: 20px;
+        }
+
+        .wishlist-item-info {
+            flex-grow: 1;
+        }
+
+        .wishlist-item-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .wishlist-item-price {
+            font-size: 16px;
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+
+        .wishlist-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-remove-wishlist {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+
+        .btn-add-to-cart {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+
+        .empty-wishlist {
+            text-align: center;
+            padding: 40px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body id="category">
+
+	<!-- Start Header Area -->
+	<header class="header_area sticky-header">
+		<div class="main_menu">
+			<nav class="navbar navbar-expand-lg navbar-light main_box">
+				<div class="container">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<a class="navbar-brand logo_h d-flex align-items-center" href="{% url 'home' %}">
+						<img src="{% static 'img/logo2.png' %}" alt="Baka Store Logo" style="height: 4rem; width: 4rem; margin-right: 0.5rem;">
+						<p class="brand-text" style="font-size: 1.5rem; font-weight: bold; color: #333; margin: 0;">Baka Store</p>
+					</a>
+					
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+					 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+						<ul class="nav navbar-nav menu_nav ml-auto">
+							<li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+							<li class="nav-item submenu dropdown">
+								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+								 aria-expanded="false">Shop</a>
+								<ul class="dropdown-menu">
+									<li class="nav-item"><a class="nav-link" href="{% url 'category' %}">All Action Figures</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">New Arivals</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">Best Sellers</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">On Sale</a></li>
+								</ul>
+							</li>
+							<li class="nav-item submenu dropdown">
+								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+								 aria-expanded="false">Character Types</a>
+								<ul class="dropdown-menu">
+									<li class="nav-item"><a class="nav-link" href="#">Heroes</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">Villains</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">Sidekicks</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">Monsters</a></li>
+								</ul>
+							</li>
+							<li class="nav-item submenu dropdown active">
+								<a href="#" class="nav-link dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true"
+								 aria-expanded="false">Account</a>
+								<ul class="dropdown-menu">
+									{% if user.is_authenticated %}
+            							<li class="nav-item">
+                							<a class="nav-link" href="{% url 'user-logout' %}">Logout</a>
+            							</li>
+										<li class="nav-item">
+                							<a class="nav-link" href="#">Wishlist</a>
+            							</li>
+										<li class="nav-item">
+                							<a class="nav-link" href="{% url 'account_details' %}">Account Settings</a>
+            							</li>
+       	 							{% else %}
+            							<li class="nav-item">
+                							<a class="nav-link" href="{% url 'user-login' %}">Login</a>
+           	 							</li>
+        							{% endif %}
+								</ul>
+							</li>
+							<li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+						</ul>
+						<ul class="nav navbar-nav navbar-right">
+							<li class="nav-item active"><a href="{% url 'cart' %}" class="cart"><span class="ti-bag"></span></a></li>
+							<li class="nav-item">
+								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+		</div>
+		<div class="search_input" id="search_input_box">
+			<div class="container">
+				<form class="d-flex justify-content-between">
+					<input type="text" class="form-control" id="search_input" placeholder="Search Here">
+					<button type="submit" class="btn"></button>
+					<span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
+				</form>
+			</div>
+		</div>
+	</header>
+	<!-- End Header Area -->
+
+	<!-- Start Banner Area -->
+	<section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1>Account Details</h1>
+                    <nav class="d-flex align-items-center">
+                        <a href="{% url 'home' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="{% url 'account_details' %}">Account</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+	<!-- End Banner Area -->
+	<section class="otaku-profile-area">
+        <div class="container">
+            <div class="row">
+                <!-- Anime-inspired Sidebar -->
+                <div class="col-lg-3">
+                    <div class="otaku-menu">
+                        <div class="menu-header">
+                            <img src="{% static 'img/logo2.png' %}" alt="Baka Store Logo" class="menu-logo">
+                            <h3>Otaku Command Center</h3>
+                        </div>
+                        <ul class="otaku-nav">
+                            <li><a href="{% url 'account_details' %}"><span class="icon">&#x1F464;</span> My Profile</a></li>
+                            <li><a href="{% url 'order_history' %}"><span class="icon">&#x1F4C5;</span> Order History</a></li>
+                            <li class="active"><a href="{% url 'wishlist' %}"><span class="icon">&#x2764;&#xFE0F;</span> Wishlist</a></li>
+                            <li><a href="{% url 'wallet' %}"><span class="icon">&#x1F4B0;</span>Wallet</a></li>
+                            <li><a href="{% url 'user-logout' %}"><span class="icon">&#x1F6AA;</span> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Main Content Area -->
+                <div class="col-lg-9">
+                    <div class="user-profile-card">
+                        <div class="profile-header">
+                            <h2>My Wishlist</h2>
+                        </div>
+                        <div class="profile-body">
+                            {% if wishlist_items %}
+                                {% for item in wishlist_items %}
+                                    <div class="wishlist-item">
+                                        <img src="{{ item.product.image1.url }}" alt="{{ item.product.name }}">
+                                        <div class="wishlist-item-info">
+                                            <h3 class="wishlist-item-title">{{ item.product.name }} - {{ item.product.variants.first.size }}</h3>
+                                            <p class="wishlist-item-price">${{ item.product.variants.first.price }}</p>
+                                            <div class="wishlist-actions">
+                                                <button class="btn btn-sm btn-remove-wishlist" data-item-id="{{ item.id }}">Remove</button>
+                                                <button class="btn btn-sm btn-add-to-cart" data-product-id="{{ item.product.id }}" data-variant-id="{{ item.product.variants.first.id }}">Add to Cart</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="empty-wishlist">
+                                    <h3>Your wishlist is empty</h3>
+                                    <p>Start adding items to your wishlist as you shop!</p>
+                                    <a href="{% url 'category' %}" class="btn btn-primary">Shop Now</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    
+
+	<!-- start footer Area -->
+	<footer class="footer-area section_gap">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg">
+					<div class="single-footer-widget about-us-widget">
+						<h6>About Us</h6>
+						<p>
+							Welcome to Baka Store, your ultimate destination for anime action figures. We are passionate about bringing your favorite characters to life with high-quality figures. Our mission is to provide anime enthusiasts with a wide variety of collectibles, ensuring that every fan can find something they love. At Baka Store, we are committed to delivering exceptional products and customer service. Join us in celebrating the world of anime!
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="footer-bottom d-flex justify-content-center align-items-center flex-wrap">
+				<p class="footer-text m-0">
+					Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Baka Store
+				</p>
+			</div>
+			
+		</div>
+	</footer>
+	<!-- End footer Area -->
+	<script src="{% static 'js/vendor/jquery-2.2.4.min.js' %}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+	 crossorigin="anonymous"></script>
+	<script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/jquery.ajaxchimp.min.js' %}"></script>
+	<script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
+	<script src="{% static 'js/jquery.sticky.js' %}"></script>
+	<script src="{% static 'js/nouislider.min.js' %}"></script>
+	<script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+	<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+	<!--gmaps Js-->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
+	<script src="{% static 'js/gmaps.min.js' %}"></script>
+	<script src="{% static 'js/main.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            // Remove item from wishlist
+            $('.btn-remove-wishlist').click(function() {
+                var itemId = $(this).data('item-id');
+                if (confirm('Are you sure you want to remove this item from your wishlist?')) {
+                    $.ajax({
+                        url: '/Wishlist/remove-from-wishlist/' + itemId + '/',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                alert('Item removed from wishlist');
+                                location.reload();
+                            } else {
+                                alert('Failed to remove item: ' + response.error);
+                            }
+                        },
+                        error: function() {
+                            alert('An error occurred. Please try again.');
+                        }
+                    });
+                }
+            });
+
+            // Add item to cart
+            $('.btn-add-to-cart').click(function() {
+                var productVariantId = $(this).data('variant-id');
+                $.ajax({
+                    url: '/Cart/add-to-cart/' + $(this).data('product-id') + '/' + $(this).data('variant-id') + '/',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Item added to cart');
+                        } else {
+                            alert('Failed to add item to cart: ' + response.message);
+                        }
+                    },
+                    error: function() {
+                        alert('An error occurred. Please try again.');
+                    }
+                });                
+            });
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        });
+    </script>
+</body>
+
+</html>

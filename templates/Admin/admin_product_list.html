@@ -1,0 +1,105 @@
+{% extends 'Admin/base_admin.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Product List</h2>
+    <form method="GET" action="{% url 'product_list' %}" class="mb-3">
+        <input type="text" name="q" value="{{ search_query }}" placeholder="Search products..." class="form-control">
+        <button type="submit" class="btn btn-primary mt-2">Search</button>
+    </form>
+    <a href="{% url 'add_products' %}" class="btn btn-success mb-3">Add Product</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Image</th>
+                <th>Status</th>
+                <th>Variant Size</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                {% for variant in product.variants.all %}
+                    <tr>
+                        {% if forloop.first %}
+                            <td rowspan="{{ product.variants.count }}">{{ product.name }}</td>
+                            <td rowspan="{{ product.variants.count }}">{{ product.category.name }}</td>
+                            <td rowspan="{{ product.variants.count }}">{{ product.description|slice:":20" }}{% if product.description|length > 20 %}...{% endif %}</td>
+                            <td rowspan="{{ product.variants.count }}">
+                                <img src="{{ product.image1.url }}" alt="{{ product.name }}" style="width: 100px; height: auto;">
+                            </td>
+                            <td rowspan="{{ product.variants.count }}">{{ product.get_status_display }}</td>
+                        {% endif %}
+                        <td>{{ variant.size }}</td>
+                        <td>{{ variant.price }}</td>
+                        <td>{{ variant.stock }}</td>
+                        <td>
+                            <a href="{% url 'edit_product' product.id %}" class="btn btn-primary btn-sm">Edit</a>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="confirmDeleteVariant({{ variant.id }})">Delete</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center">No products available.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="pagination">
+        <span class="step-links">
+            {% if products.has_previous %}
+                <a href="?page=1&q={{ search_query }}">&laquo; First</a>
+                <a href="?page={{ products.previous_page_number }}&q={{ search_query }}">Previous</a>
+            {% endif %}
+            <span class="current">
+                Page {{ products.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+            {% if products.has_next %}
+                <a href="?page={{ products.next_page_number }}&q={{ search_query }}">Next</a>
+                <a href="?page={{ products.paginator.num_pages }}&q={{ search_query }}">Last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+
+<!-- Include SweetAlert library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function confirmDeleteVariant(variantId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This variant will be soft deleted.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/variant/soft_delete/${variantId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire('Deleted!', 'The variant has been soft deleted.', 'success')
+                        .then(() => location.reload()); // Reload the page to reflect the changes
+                    } else {
+                        Swal.fire('Error!', 'There was a problem deleting the variant.', 'error');
+                    }
+                });
+            }
+        });
+    }
+</script>
+{% endblock %}

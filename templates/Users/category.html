@@ -1,0 +1,741 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zxx" class="no-js">
+
+<head>
+	<!-- Mobile Specific Meta -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Favicon-->
+	<link rel="shortcut icon" href="{% static 'img/logo2.png' %}">
+	<!-- Author Meta -->
+	<meta name="author" content="CodePixar">
+	<!-- Meta Description -->
+	<meta name="description" content="">
+	<!-- Meta Keyword -->
+	<meta name="keywords" content="">
+	<!-- meta character set -->
+	<meta charset="UTF-8">
+	<!-- Site Title -->
+	<title>Baka Store</title>
+
+	<!--
+            CSS
+            ============================================= -->
+	<link rel="stylesheet" href="{% static 'css/linearicons.css' %}">
+	<link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/themify-icons.css' %}">
+	<link rel="stylesheet" href="{% static 'css/nice-select.css' %}">
+	<link rel="stylesheet" href="{% static 'css/nouislider.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'css/main.css' %}">
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<style>
+        .single-product img {
+            width: 100%;
+            height: 350px; 
+            object-fit: cover;
+        }
+		.about-us-widget {
+			position: relative;
+			z-index: 1;
+			background: rgba(255, 255, 255, 0.108); 
+			padding: 20px;
+			border-radius: 10px;
+		}
+		
+		.about-us-widget::before,
+		.about-us-widget::after {
+			content: '';
+			position: absolute;
+			z-index: -1;
+			background-size: cover;
+			background-position: center;
+			width: 100px;
+			height: 100px;
+		}
+		
+		.about-us-widget::before {
+			background-image: url('{% static "img/pngegg.png" %}'); 
+			top: -20px;
+			left: -20px;
+		}
+		
+		.about-us-widget::after {
+			background-image: url('{% static "img/naruto.png" %}'); 
+			bottom: -20px;
+			right: -20px;
+		}
+		
+		.about-us-widget::before,
+		.about-us-widget::after {
+			opacity: 0.3; 
+			transform: rotate(-15deg); 
+			border-radius: 50%; 
+		}
+
+		.product-card {
+			background: #fff;
+			border-radius: 10px;
+			box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+			overflow: hidden;
+			transition: all 0.3s ease;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+		}
+		
+		.product-card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+		}
+		
+		.product-image {
+			position: relative;
+			overflow: hidden;
+			padding-top: 100%; /* 1:1 Aspect Ratio */
+		}
+		
+		.product-image img {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			transition: transform 0.5s ease;
+		}
+		
+		.product-card:hover .product-image img {
+			transform: scale(1.1);
+		}
+		
+		.overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(0,0,0,0.7);
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+		
+		.product-card:hover .overlay {
+			opacity: 1;
+		}
+		
+		.overlay .btn {
+			margin: 5px;
+			transform: translateY(20px);
+			transition: all 0.3s ease;
+		}
+		
+		.product-card:hover .overlay .btn {
+			transform: translateY(0);
+		}
+		
+		.product-info {
+			padding: 20px;
+			flex-grow: 1;
+			display: flex;
+			flex-direction: column;
+		}
+		
+		.product-title {
+			margin-bottom: 10px;
+			font-size: 1.1em;
+			line-height: 1.3;
+			flex-grow: 1;
+		}
+		
+		.product-title a {
+			color: #333;
+			text-decoration: none;
+		}
+		
+		.price-rating {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 10px;
+		}
+		
+		.price {
+			font-weight: bold;
+			color: #ff4e00;
+		}
+		
+		.rating {
+			color: #ffd700;
+		}
+		
+		.product-description {
+			font-size: 0.9em;
+			color: #666;
+			margin-bottom: 0;
+		}
+
+		.categories-scroll {
+			max-height: 400px; 
+			overflow-y: auto;
+			padding-right: 10px;
+		}
+	
+		.categories-scroll::-webkit-scrollbar {
+			width: 5px;
+		}
+	
+		.categories-scroll::-webkit-scrollbar-track {
+			background: #f1f1f1;
+		}
+	
+		.categories-scroll::-webkit-scrollbar-thumb {
+			background: #888;
+		}
+	
+		.categories-scroll::-webkit-scrollbar-thumb:hover {
+			background: #555;
+		}
+
+		.filter-card {
+			background-color: #f8f9fa;
+			border-radius: 10px;
+			padding: 15px;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+		}
+		
+		.filter-title {
+			margin-bottom: 15px;
+			color: #333;
+			font-weight: 600;
+			font-size: 1rem;
+		}
+		
+		.price-range-inputs {
+			display: flex;
+			align-items: center;
+			background-color: #fff;
+			border: 1px solid #ced4da;
+			border-radius: 5px;
+			padding: 5px;
+			margin-bottom: 10px;
+		}
+		
+		.price-input-group {
+			display: flex;
+			align-items: center;
+			flex: 1;
+		}
+		
+		.price-label {
+			font-weight: bold;
+			color: #495057;
+			margin-right: 2px;
+		}
+		
+		.price-input {
+			border: none;
+			background: transparent;
+			width: 100%;
+			padding: 5px;
+			font-size: 0.9rem;
+			color: #495057;
+		}
+		
+		.price-input:focus {
+			outline: none;
+		}
+		
+		.price-separator {
+			margin: 0 5px;
+			color: #6c757d;
+			font-weight: bold;
+		}
+		
+		#price-range-slider {
+			height: 6px;
+			background: #e9ecef;
+			border: none;
+			margin: 15px 0 10px;
+		}
+		
+		#price-range-slider .ui-slider-range {
+			background: #ff9101;
+		}
+		
+		#price-range-slider .ui-slider-handle {
+			width: 16px;
+			height: 16px;
+			border-radius: 50%;
+			border: none;
+			background: #ff9101;
+			top: -5px;
+			cursor: pointer;
+		}
+		
+		.price-range-labels {
+			display: flex;
+			justify-content: space-between;
+			color: #6c757d;
+			font-size: 0.8rem;
+		}
+		
+		.btn-primary {
+			background-color: #ff9101;
+			border-color: #ff9101;
+			transition: all 0.3s ease;
+			font-size: 0.9rem;
+			font-weight: 500;
+			padding: 8px 0;
+		}
+		
+		.btn-primary:hover {
+			background-color: #ff9101;
+			border-color: #ff9101;
+		}
+		
+		/* Remove spinner buttons from number inputs */
+		.price-input::-webkit-inner-spin-button, 
+		.price-input::-webkit-outer-spin-button { 
+			-webkit-appearance: none; 
+			margin: 0; 
+		}
+		.price-input[type=number] {
+			-moz-appearance: textfield;
+		}
+    </style>
+</head>
+
+<body id="category">
+
+	<!-- Start Header Area -->
+	<header class="header_area sticky-header">
+		<div class="main_menu">
+			<nav class="navbar navbar-expand-lg navbar-light main_box">
+				<div class="container">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<a class="navbar-brand logo_h d-flex align-items-center" href="{% url 'home' %}">
+						<img src="{% static 'img/logo2.png' %}" alt="Baka Store Logo" style="height: 4rem; width: 4rem; margin-right: 0.5rem;">
+						<p class="brand-text" style="font-size: 1.5rem; font-weight: bold; color: #333; margin: 0;">Baka Store</p>
+					</a>
+					
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+					 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+						<ul class="nav navbar-nav menu_nav ml-auto">
+							<li class="nav-item "><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+							<li class="nav-item submenu dropdown active">
+								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+								 aria-expanded="false">Shop</a>
+								<ul class="dropdown-menu">
+									<li class="nav-item"><a class="nav-link" href="{% url 'category' %}">All Action Figures</a></li>
+									<li class="nav-item"><a class="nav-link" href="{% url 'new_arrivals' %}">New Arrivals</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">Best Sellers</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">On Sale</a></li>
+								</ul>
+							</li>
+							<li class="nav-item submenu dropdown">
+								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+								 aria-expanded="false">Character Types</a>
+								<ul class="dropdown-menu">
+									<li class="nav-item"><a class="nav-link" href="#">Heroes</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">Villains</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">Sidekicks</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">Monsters</a></li>
+								</ul>
+							</li>
+							<li class="nav-item submenu dropdown">
+								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+								 aria-expanded="false">Account</a>
+								<ul class="dropdown-menu">
+									{% if user.is_authenticated %}
+            							<li class="nav-item">
+                							<a class="nav-link" href="{% url 'user-logout' %}">Logout</a>
+            							</li>
+										<li class="nav-item">
+                							<a class="nav-link" href="{% url 'user-logout' %}">Wishlist</a>
+            							</li>
+										<li class="nav-item">
+                							<a class="nav-link" href="{% url 'account_details' %}">Account Settings</a>
+            							</li>
+       	 							{% else %}
+            							<li class="nav-item">
+                							<a class="nav-link" href="{% url 'user-login' %}">Login</a>
+           	 							</li>
+        							{% endif %}
+								</ul>
+							</li>
+							<li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+						</ul>
+						<ul class="nav navbar-nav navbar-right">
+							<li class="nav-item"><a href="{% url 'cart' %}" class="cart"><span class="ti-bag"></span></a></li>
+							<li class="nav-item">
+								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+		</div>
+		<div class="search_input" id="search_input_box">
+			<div class="container">
+				<form class="d-flex justify-content-between">
+					<input type="text" class="form-control" id="search_input" placeholder="Search Here">
+					<button type="submit" class="btn"></button>
+					<span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
+				</form>
+			</div>
+		</div>
+	</header>
+	<!-- End Header Area -->
+
+	<!-- Start Banner Area -->
+	<section class="banner-area organic-breadcrumb">
+		<div class="container">
+			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+				<div class="col-first">
+					<h1>{{ page_title }}</h1>
+					<nav class="d-flex align-items-center">
+						<a href="{% url 'home' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+						{% for crumb in breadcrumbs %}
+							{% if forloop.last %}
+								<a href="{{ crumb.url }}">{{ crumb.title }}</a>
+							{% else %}
+								<a href="{{ crumb.url }}">{{ crumb.title }}<span class="lnr lnr-arrow-right"></span></a>
+							{% endif %}
+						{% endfor %}
+					</nav>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Banner Area -->
+	<div class="container">
+		<div class="row">
+			<div class="col-xl-3 col-lg-4 col-md-5">
+				<div class="sidebar-categories">
+					<div class="head">Categories</div>
+					<div class="categories-scroll">
+						<ul class="main-categories">
+							<li class="main-nav-list">
+								<a href="{% url 'category' %}">All Products</a>
+							</li>
+							{% for category in categories %}
+							<li class="main-nav-list">
+								<a href="{% url 'category' %}?category={{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}class="active"{% endif %}>
+									<span class="lnr lnr-arrow-right"></span>{{ category.name }}<span class="number">({{ category.product_set.count }})</span>
+								</a>
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+
+				<!-- New Advanced Search and Sort Options -->
+				<div class="sidebar-sort mt-50">
+					<div class="sort-card">
+						<h5 class="sort-title">Sort By</h5>
+						<form id="sort-form" method="get">
+							{% if selected_category %}
+							<input type="hidden" name="category" value="{{ selected_category }}">
+							{% endif %}
+							{% if min_price %}
+							<input type="hidden" name="min_price" value="{{ min_price }}">
+							{% endif %}
+							{% if max_price %}
+							<input type="hidden" name="max_price" value="{{ max_price }}">
+							{% endif %}
+							<select name="sort" class="form-control" onchange="this.form.submit()">
+								<option value="">Select sorting option</option>
+								<option value="popularity" {% if sort == 'popularity' %}selected{% endif %}>Popularity</option>
+								<option value="price_low_high" {% if sort == 'price_low_high' %}selected{% endif %}>Price: Low to High</option>
+								<option value="price_high_low" {% if sort == 'price_high_low' %}selected{% endif %}>Price: High to Low</option>
+								<option value="new_arrivals" {% if sort == 'new_arrivals' %}selected{% endif %}>New Arrivals</option>
+								<option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>A-Z</option>
+								<option value="name_desc" {% if sort == 'name_desc' %}selected{% endif %}>Z-A</option>
+							</select>
+						</form>
+					</div>
+				</div>
+				
+				<div class="sidebar-filter mt-50">
+					<div class="filter-card mt-100">
+						<h5 class="filter-title">Price Range</h5>
+						<form id="price-filter-form" method="get">
+							{% if selected_category %}
+							<input type="hidden" name="category" value="{{ selected_category }}">
+							{% endif %}
+							<div class="price-range-area">
+								<div class="price-range-inputs mb-3">
+									<div class="price-input-group">
+										<span class="price-label">₹</span>
+										<input type="number" id="min-price" name="min_price" class="price-input" placeholder="Min" value="{{ min_price|default:0 }}">
+									</div>
+									<span class="price-separator">-</span>
+									<div class="price-input-group">
+										<span class="price-label">₹</span>
+										<input type="number" id="max-price" name="max_price" class="price-input" placeholder="Max" value="{{ max_price|default:10000 }}">
+									</div>
+								</div>
+								<div id="price-range-slider"></div>
+								<div class="price-range-labels mt-2">
+									<span>₹0</span>
+									<span>₹10000</span>
+								</div>
+							</div>
+							<button type="submit" class="btn btn-primary btn-block mt-3">Apply Filter</button>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="col-xl-9 col-lg-8 col-md-7">
+				<!-- Start Filter Bar -->
+				
+				<!-- End Filter Bar -->
+				<!-- Start Best Seller -->
+				
+				<section class="latest-product-area pb-40 category-list">
+					<div class="container">
+						<h2 class="text-center mb-5">{{ page_title }}</h2>
+						<div class="row">
+							{% for variant in variants %}
+							<div class="col-lg-4 col-md-6 mb-4">
+								<div class="product-card">
+									<div class="product-image">
+										<a href="{% url 'product_details' variant.product.id %}">
+											<img src="{{ variant.product.image1.url }}" alt="{{ variant.product.name }}">
+										</a>
+										<div class="overlay">
+											<!-- <a href="#" class="btn btn-primary btn-sm">Add to Cart</a>
+											<a href="#" class="btn btn-outline-light btn-sm">
+												<i class="lnr lnr-heart"></i> Wishlist
+											</a> -->
+										</div>
+									</div>
+									<div class="product-info">
+										<h5 class="product-title">
+											<a href="{% url 'product_details' variant.product.id %}">
+												{{ variant.product.name }} - {{ variant.size }}
+											</a>
+										</h5>
+										<div class="price-rating">
+											{% if variant.final_price < variant.price %}
+												<span class="original-price" style="text-decoration: line-through;">₹{{ variant.price }}</span>
+												<span class="discounted-price">₹{{ variant.final_price }}</span>
+												<span class="savings">(Save ₹{{ variant.price }})</span>
+											{% else %}
+												<span class="price">₹{{ variant.price }}</span>
+											{% endif %}
+											<div class="rating">
+												{% for i in "12345"|make_list %}
+													{% if forloop.counter <= variant.product.rating %}
+														<i class="fa fa-star"></i>
+													{% else %}
+														<i class="fa fa-star-o"></i>
+													{% endif %}
+												{% endfor %}
+											</div>
+										</div>
+										<p class="product-description">{{ variant.product.description|truncatewords:15 }}</p>
+										<p class="product-size">Size: {{ variant.size }}</p>
+										{% if variant.stock > 0 %}
+											<p class="product-stock">In Stock</p>
+										{% else %}
+											<p class="product-stock out-of-stock">Out of Stock</p>
+										{% endif %}
+										{% if page_title == 'New Arrivals' %}
+											<p class="new-arrival-date">Added on: {{ variant.product.created_at|date:"F d, Y" }}</p>
+										{% endif %}
+										{% if variant.product.offer_type != 'none' or variant.product.category.offer_type != 'none' %}
+											<p class="offer-tag">Special Offer!</p>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+							{% empty %}
+							<div class="col-12">
+								<p>No products found.</p>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
+				</section>
+				
+			
+				<!-- End Best Seller -->
+				<!-- Start Filter Bar -->
+				<div class="filter-bar d-flex flex-wrap align-items-center">
+					<!-- <div class="sorting mr-auto">
+						<select>
+							<option value="1">Show 12</option>
+							<option value="1">Show 12</option>
+							<option value="1">Show 12</option>
+						</select>
+					</div> -->
+					<div class="pagination">
+						{% if variants.has_previous %}
+							<a href="?page={{ variants.previous_page_number }}" class="prev-arrow"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></a>
+						{% endif %}
+						
+						{% for i in variants.paginator.page_range %}
+							{% if variants.number == i %}
+								<a href="#" class="active">{{ i }}</a>
+							{% elif i > variants.number|add:'-3' and i < variants.number|add:'3' %}
+								<a href="?page={{ i }}">{{ i }}</a>
+							{% endif %}
+						{% endfor %}
+						
+						{% if variants.has_next %}
+							<a href="?page={{ variants.next_page_number }}" class="next-arrow"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+						{% endif %}
+					</div>
+				</div>
+				<!-- End Filter Bar -->
+			</div>
+		</div>
+	</div>
+
+	<!-- start footer Area -->
+	<footer class="footer-area section_gap">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg">
+					<div class="single-footer-widget about-us-widget">
+						<h6>About Us</h6>
+						<p>
+							Welcome to Baka Store, your ultimate destination for anime action figures. We are passionate about bringing your favorite characters to life with high-quality figures. Our mission is to provide anime enthusiasts with a wide variety of collectibles, ensuring that every fan can find something they love. At Baka Store, we are committed to delivering exceptional products and customer service. Join us in celebrating the world of anime!
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="footer-bottom d-flex justify-content-center align-items-center flex-wrap">
+				<p class="footer-text m-0">
+					Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Baka Store
+				</p>
+			</div>
+			
+		</div>
+	</footer>
+	<!-- End footer Area -->
+
+	<!-- Modal Quick Product View -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="container relative">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<div class="product-quick-view">
+					<div class="row align-items-center">
+						<div class="col-lg-6">
+							<div class="quick-view-carousel">
+								<div class="item" style="background: url(img/organic-food/q1.jpg);">
+
+								</div>
+								<div class="item" style="background: url(img/organic-food/q1.jpg);">
+
+								</div>
+								<div class="item" style="background: url(img/organic-food/q1.jpg);">
+
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="quick-view-content">
+								<div class="top">
+									<h3 class="head">Mill Oil 1000W Heater, White</h3>
+									<div class="price d-flex align-items-center"><span class="lnr lnr-tag"></span> <span class="ml-10">$149.99</span></div>
+									<div class="category">Category: <span>Household</span></div>
+									<div class="available">Availibility: <span>In Stock</span></div>
+								</div>
+								<div class="middle">
+									<p class="content">Mill Oil is an innovative oil filled radiator with the most modern technology. If you are
+										looking for something that can make your interior look awesome, and at the same time give you the pleasant
+										warm feeling during the winter.</p>
+									<a href="#" class="view-full">View full Details <span class="lnr lnr-arrow-right"></span></a>
+								</div>
+								<div class="bottom">
+									<div class="color-picker d-flex align-items-center">Color:
+										<span class="single-pick"></span>
+										<span class="single-pick"></span>
+										<span class="single-pick"></span>
+										<span class="single-pick"></span>
+										<span class="single-pick"></span>
+									</div>
+									<div class="quantity-container d-flex align-items-center mt-15">
+										Quantity:
+										<input type="text" class="quantity-amount ml-15" value="1" />
+										<div class="arrow-btn d-inline-flex flex-column">
+											<button class="increase arrow" type="button" title="Increase Quantity"><span class="lnr lnr-chevron-up"></span></button>
+											<button class="decrease arrow" type="button" title="Decrease Quantity"><span class="lnr lnr-chevron-down"></span></button>
+										</div>
+
+									</div>
+									<div class="d-flex mt-20">
+										<a href="#" class="view-btn color-2"><span>Add to Cart</span></a>
+										<a href="#" class="like-btn"><span class="lnr lnr-layers"></span></a>
+										<a href="#" class="like-btn"><span class="lnr lnr-heart"></span></a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery.ajaxchimp.min.js' %}"></script>
+<script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
+<script src="{% static 'js/jquery.sticky.js' %}"></script>
+<script src="{% static 'js/nouislider.min.js' %}"></script>
+<script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
+<script src="{% static 'js/gmaps.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+	
+	<script>
+		$(document).ready(function() {
+			$("#price-range-labels").slider({
+				range: true,
+				min: 0,
+				max: 10000,
+				values: [{{ min_price|default:0 }}, {{ max_price|default:10000 }}],
+				slide: function(event, ui) {
+					$("#min-price").val(ui.values[0]);
+					$("#max-price").val(ui.values[1]);
+				}
+			});
+		
+			$("#min-price").val($("#price-range-labels").slider("values", 0));
+			$("#max-price").val($("#price-range-labels").slider("values", 1));
+		
+			$("#min-price, #max-price").on("input", function() {
+				var min = parseInt($("#min-price").val());
+				var max = parseInt($("#max-price").val());
+				if (min >= 0 && max <= 10000 && min <= max) {
+					$("#price-range-labels").slider("values", [min, max]);
+				}
+			});
+		});
+	</script>
+</body>
+
+</html>

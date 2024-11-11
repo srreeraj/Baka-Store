@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baka Store Checkout</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 animate__animated animate__fadeIn">
+            <!-- Header Section -->
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Complete Your Purchase</h1>
+                <p class="text-gray-600">Order #{{ order.id }}</p>
+                {% if order.coupon %}
+                <div class="mt-2 inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                    Coupon Applied: {{ order.coupon.code }}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Order Summary -->
+            <div class="bg-gray-50 rounded-xl p-6 mb-6">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Order Summary</h2>
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Amount</span>
+                    <span class="font-medium">₹{{ amount|floatformat:2 }}</span>
+                </div>
+                <hr class="my-4 border-gray-200">
+                <div class="flex justify-between text-lg font-semibold">
+                    <span>Total</span>
+                    <span class="text-blue-600">₹{{ amount|floatformat:2 }}</span>
+                </div>
+            </div>
+
+            <!-- Payment Button -->
+            <button id="rzp-button1" 
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-xl 
+                           transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 
+                           focus:ring-blue-500 focus:ring-opacity-50 flex items-center justify-center space-x-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                <span>Pay Securely Now</span>
+            </button>
+
+            <!-- Security Badge -->
+            <div class="mt-6 text-center">
+                <div class="flex items-center justify-center text-gray-500 text-sm">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    Secured by Razorpay
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Form -->
+    <form action="{% url 'razorpay_callback' %}" method="POST" id="razorpay-form" style="display:none;">
+        {% csrf_token %}
+        <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+        <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+        <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+    </form>
+
+    <!-- Scripts -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+    var options = {
+        "key": "{{ razorpay_merchant_key }}",
+        "amount": "{{ razorpay_amount }}",
+        "currency": "{{ currency }}",
+        "name": "Baka Store",
+        "description": "Order #{{ order.id }}{% if order.coupon %} (Coupon: {{ order.coupon.code }}){% endif %}",
+        "order_id": "{{ razorpay_order_id }}",
+        "handler": function (response){
+            document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+            document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+            document.getElementById('razorpay_signature').value = response.razorpay_signature;
+            document.getElementById('razorpay-form').submit();
+        },
+        "prefill": {
+            "name": "{{ request.user.get_full_name }}",
+            "email": "{{ request.user.email }}",
+            "contact": "{{ request.user.phone_number }}"
+        },
+        "theme": {
+            "color": "#2563eb"
+        }
+    };
+
+    var rzp1 = new Razorpay(options);
+    rzp1.on('payment.failed', function (response){
+        // Create a more user-friendly error message
+        const errorMessage = `Payment failed: ${response.error.description}\nReason: ${response.error.reason}`;
+        alert(errorMessage);
+    });
+
+    document.getElementById('rzp-button1').onclick = function(e){
+        rzp1.open();
+        e.preventDefault();
+    }
+    </script>
+</body>
+</html>

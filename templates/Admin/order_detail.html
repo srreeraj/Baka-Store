@@ -1,0 +1,153 @@
+<!-- order_detail.html -->
+{% extends 'Admin/base_admin.html' %}
+{% load static %}
+{% block extra_head %}
+<style>
+    .ordered-products-card {
+        transition: height 0.3s ease;
+    }
+    
+    .ordered-products-card .table-responsive {
+        transition: max-height 0.3s ease;
+    }
+
+    @media (max-width: 767px) {
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .table th,
+        .table td {
+            white-space: nowrap;
+        }
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container-fluid mt-5 px-6">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-12">
+            <h3 class="mb-4">Order Details</h3>
+            <div class="card shadow-sm">
+                <div class="card-body" style="height: 200px;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="card-title">Order #{{ order.id }}</h5>
+                            <p><strong>Customer:</strong> {{ order.user.get_full_name }}</p>
+                            <p><strong>Date:</strong> {{ order.created_at|date:"M d, Y H:i" }}</p>
+                            <p><strong>Order Status:</strong> {{ order.get_status_display }}</p>
+                            <p><strong>Payment Status:</strong> {{ order.get_payment_status_display }}</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <h5 class="text-primary">Total Amount: ₹{{ order.total_amount }}</h5>
+                            <p><strong>Payment Method:</strong> {{ order.get_payment_method_display }}</p>
+                            <p><strong>Shipping Address:</strong> {{ order.shipping_address }}</p>
+                            <p><strong>Billing Address:</strong> {{ order.billing_address }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4 shadow-sm ordered-products-card">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Ordered Products</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Image</th>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Variant</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Subtotal</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order_items %}
+                                <tr>
+                                    <td>
+                                        <img src="{{ item.product_variant.product.image1.url }}" alt="{{ item.product_variant.product.name }}" class="img-fluid" style="max-width: 50px; height: auto;">
+                                    </td>
+                                    <td>{{ item.product_variant.product.name }}</td>
+                                    <td>{{ item.product_variant.size }}</td>
+                                    <td>₹{{ item.price }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>₹{{ item.total_price }}</td>
+                                    <td>{{ item.get_status_display }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center">No products in this order.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Order Summary</h5>
+                    <div class="row">
+                        <div class="col-md-6 offset-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Subtotal:</strong></td>
+                                    <td class="text-end">₹{{ order.total_amount|add:order.discount }}</td>
+                                </tr>
+                                {% if order.coupon %}
+                                <tr>
+                                    <td><strong>Coupon ({{ order.coupon.code }}):</strong></td>
+                                    <td class="text-end">-₹{{ order.discount }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if offers %}
+                                <tr>
+                                    <td><strong>Offers Applied:</strong></td>
+                                    <td class="text-end">
+                                        {% for offer in offers %}
+                                            <p>{{ offer.product_variant__product__offer_type }} - ₹{{ offer.product_variant__product__offer_value }}</p>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                {% endif %}
+
+                                <!-- Add shipping and tax if you have these fields -->
+                                <tr class="table-primary">
+                                    <td><strong>Total:</strong></td>
+                                    <td class="text-end"><strong>₹{{ order.total_amount }}</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const card = document.querySelector('.ordered-products-card');
+        const table = card.querySelector('table');
+        const rowCount = table.rows.length - 1; // Subtract 1 to exclude the header row
+        
+        // Base height for the card (adjust as needed)
+        const baseHeight = 200; 
+        // Height to add for each row (adjust based on your row height)
+        const rowHeight = 50; 
+        
+        // Calculate new height
+        const newHeight = baseHeight + (rowCount * rowHeight);
+        
+        // Set the new height
+        card.style.height = `${newHeight}px`;
+        
+        // Ensure the table is scrollable if it exceeds the card height
+        card.querySelector('.table-responsive').style.maxHeight = `${newHeight - 100}px`;
+        card.querySelector('.table-responsive').style.overflowY = 'auto';
+    });
+    </script>
+{% endblock %}

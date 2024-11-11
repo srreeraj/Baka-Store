@@ -1,0 +1,25 @@
+{% if transactions %}
+    {% for transaction in transactions %}
+        <div class="transaction-item {% if transaction.transaction_type == 'CREDIT' %}credit{% else %}debit{% endif %}">
+            <div class="transaction-icon">
+                {% if transaction.transaction_type == 'CREDIT' %}
+                    <i class="fas fa-arrow-down"></i>
+                {% else %}
+                    <i class="fas fa-arrow-up"></i>
+                {% endif %}
+            </div>
+            <div class="transaction-details">
+                <span class="transaction-type">{{ transaction.get_transaction_type_display }}</span>
+                <span class="transaction-date">{{ transaction.created_at|date:"F d, Y H:i" }}</span>
+            </div>
+            <div class="transaction-amount">
+                {% if transaction.transaction_type == 'CREDIT' %}+{% else %}-{% endif %}₹{{ transaction.amount }}
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="empty-transactions">
+        <i class="fas fa-history"></i>
+        <p>No transactions yet. Start by adding funds to your wallet!</p>
+    </div>
+{% endif %}

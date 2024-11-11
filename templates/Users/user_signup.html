@@ -1,0 +1,636 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zxx" class="no-js">
+
+<head>
+	<!-- Mobile Specific Meta -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Favicon-->
+	<link rel="shortcut icon" href="{% static 'img/logo2.png' %}">
+	<!-- Author Meta -->
+	<meta name="author" content="CodePixar">
+	<!-- Meta Description -->
+	<meta name="description" content="">
+	<!-- Meta Keyword -->
+	<meta name="keywords" content="">
+	<!-- meta character set -->
+	<meta charset="UTF-8">
+	<!-- Site Title -->
+	<title>Baka Store</title>
+
+	<!--
+		CSS
+		============================================= -->
+	<link rel="stylesheet" href="{% static 'css/linearicons.css'%}">
+	<link rel="stylesheet" href="{% static 'css/owl.carousel.css'%}">
+	<link rel="stylesheet" href="{% static 'css/themify-icons.css' %}">
+	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/nice-select.css'%}">
+	<link rel="stylesheet" href="{% static 'css/nouislider.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'css/main.css' %}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+	<style>
+		:root {
+			--primary-color: #4a90e2;
+			--secondary-color: #f5f7fa;
+			--text-color: #333;
+			--light-text-color: #777;
+			--border-color: #e1e1e1;
+		}
+		
+		body {
+			font-family: 'Roboto', sans-serif;
+			background-color: var(--secondary-color);
+			color: var(--text-color);
+		}
+		
+		.auth-section {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+			padding: 2rem;
+		}
+		
+		.auth-container {
+			background-color: #fff;
+			border-radius: 10px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+			width: 50%;
+		}
+		
+		.auth-form-container {
+			padding: 2rem;
+		}
+		
+		.auth-title {
+			font-size: 2rem;
+			font-weight: 700;
+			margin-bottom: 0.5rem;
+			text-align: center;
+		}
+		
+		.auth-subtitle {
+			color: var(--light-text-color);
+			text-align: center;
+			margin-bottom: 1.5rem;
+		}
+		
+		.social-login {
+			margin-bottom: 1.5rem;
+		}
+		
+		.btn-social {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			padding: 0.75rem;
+			border: 1px solid var(--border-color);
+			border-radius: 5px;
+			font-weight: 500;
+			transition: background-color 0.3s ease;
+		}
+		
+		.btn-social img {
+			width: 20px;
+			margin-right: 10px;
+		}
+		
+		.btn-google:hover {
+			background-color: #f1f3f4;
+		}
+		
+		.divider {
+			text-align: center;
+			margin: 1.5rem 0;
+			position: relative;
+		}
+		
+		.divider::before,
+		.divider::after {
+			content: "";
+			position: absolute;
+			top: 50%;
+			width: 45%;
+			height: 1px;
+			background-color: var(--border-color);
+		}
+		
+		.divider::before {
+			left: 0;
+		}
+		
+		.divider::after {
+			right: 0;
+		}
+		
+		.divider span {
+			background-color: #fff;
+			padding: 0 10px;
+			position: relative;
+			z-index: 1;
+			color: var(--light-text-color);
+		}
+		
+		.form-group {
+			margin-bottom: 1.5rem;
+		}
+		
+		.form-group label {
+			display: block;
+			margin-bottom: 0.5rem;
+			font-weight: 500;
+		}
+		
+		.form-group input {
+			width: 100%;
+			padding: 0.75rem;
+			border: 1px solid var(--border-color);
+			border-radius: 5px;
+			font-size: 1rem;
+		}
+		
+		.password-input {
+			position: relative;
+		}
+		
+		.password-toggle {
+			position: absolute;
+			right: 10px;
+			top: 50%;
+			transform: translateY(-50%);
+			background: none;
+			border: none;
+			color: var(--light-text-color);
+			cursor: pointer;
+		}
+		
+		.form-check {
+			display: flex;
+			align-items: center;
+		}
+		
+		.form-check-label {
+			margin-left: 0.5rem;
+		}
+		
+		.btn-primary {
+			background-color: var(--primary-color);
+			color: #fff;
+			padding: 0.75rem;
+			border: none;
+			border-radius: 5px;
+			font-size: 1rem;
+			font-weight: 500;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
+		
+		.btn-primary:hover {
+			background-color: #3a7bc8;
+		}
+		
+		.auth-links {
+			margin-top: 1.5rem;
+			text-align: center;
+		}
+		
+		.auth-link {
+			color: var(--primary-color);
+			text-decoration: none;
+			font-size: 0.9rem;
+			display: block;
+			margin-top: 0.5rem;
+		}
+		
+		.error-message {
+			color: red;
+			font-size: 0.9em;
+			margin-top: 5px;
+		}
+		
+		.is-invalid {
+			border-color: red;
+		}
+
+		.invalid-feedback p {
+			color: red;
+		}
+		
+		.about-us-widget {
+			position: relative;
+			z-index: 1;
+			background: rgba(255, 255, 255, 0.108); 
+			color: #777;
+			padding: 20px;
+			border-radius: 10px;
+		}
+		
+		.about-us-widget::before,
+		.about-us-widget::after {
+			content: '';
+			position: absolute;
+			z-index: -1;
+			background-size: cover;
+			background-position: center;
+			width: 100px;
+			height: 100px;
+		}
+		
+		.about-us-widget::before {
+			background-image: url('{% static "img/pngegg.png" %}'); 
+			top: -20px;
+			left: -20px;
+		}
+		
+		.about-us-widget::after {
+			background-image: url('{% static "img/naruto.png" %}'); 
+			bottom: -20px;
+			right: -20px;
+		}
+		
+		.about-us-widget::before,
+		.about-us-widget::after {
+			opacity: 0.3; 
+			transform: rotate(-15deg); 
+			border-radius: 50%; 
+		}
+		
+	</style>
+</head>
+
+<body>
+
+	<!-- Start Header Area -->
+	<header class="header_area sticky-header">
+		<div class="main_menu">
+			<nav class="navbar navbar-expand-lg navbar-light main_box">
+				<div class="container">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<a class="navbar-brand logo_h d-flex align-items-center" href="{% url 'home' %}">
+						<img src="{% static 'img/logo2.png' %}" alt="Baka Store Logo" style="height: 4rem; width: 4rem; margin-right: 0.5rem;">
+						<p class="brand-text" style="font-size: 1.5rem; font-weight: bold; color: #333; margin: 0;">Baka Store</p>
+					</a>
+					
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+					 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+						<ul class="nav navbar-nav menu_nav ml-auto">
+							<li class="nav-item active"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+							<li class="nav-item submenu dropdown">
+								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+								 aria-expanded="false">Shop</a>
+								<ul class="dropdown-menu">
+									<li class="nav-item"><a class="nav-link" href="{% url 'category' %}">All Action Figures</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">New Arivals</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">Best Sellers</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">On Sale</a></li>
+								</ul>
+							</li>
+							<li class="nav-item submenu dropdown">
+								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+								 aria-expanded="false">Categories</a>
+								<ul class="dropdown-menu">
+									<li class="nav-item"><a class="nav-link" href="#">One Piece</a></li>
+									<li class="nav-item"><a class="nav-link" href="#">Naruto</a></li>
+								</ul>
+							</li>
+							<li class="nav-item submenu dropdown">
+								<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+								 aria-expanded="false">Account</a>
+								<ul class="dropdown-menu">
+									{% if user.is_authenticated %}
+            							<li class="nav-item">
+                							<a class="nav-link" href="{% url 'user-logout' %}">Logout</a>
+            							</li>
+										<li class="nav-item">
+                							<a class="nav-link" href="{% url 'user-logout' %}">Wishlist</a>
+            							</li>
+										<li class="nav-item">
+                							<a class="nav-link" href="{% url 'user-logout' %}">Account Settings</a>
+            							</li>
+       	 							{% else %}
+            							<li class="nav-item">
+                							<a class="nav-link" href="{% url 'user-login' %}">Login</a>
+           	 							</li>
+        							{% endif %}
+									<!-- <li class="nav-item"><a class="nav-link" href="tracking.html">Tracking</a></li>
+									<li class="nav-item"><a class="nav-link" href="elements.html">Elements</a></li> -->
+								</ul>
+							</li>
+							<li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+						</ul>
+						<ul class="nav navbar-nav navbar-right">
+							<li class="nav-item"><a href="{% url 'cart' %}" class="cart"><span class="ti-bag"></span></a></li>
+							<li class="nav-item">
+								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+		</div>
+		<!-- <div class="search_input" id="search_input_box">
+			<div class="container">
+				<form class="d-flex justify-content-between">
+					<input type="text" class="form-control" id="search_input" placeholder="Search Here">
+					<button type="submit" class="btn"></button>
+					<span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
+				</form>
+			</div>
+		</div> -->
+	</header>
+	<!-- End Header Area -->
+
+	<!-- Start Banner Area -->
+	<!-- <section class="banner-area organic-breadcrumb">
+		<div class="container">
+			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+				<div class="col-first">
+					<h1>Login/Register</h1>
+					<nav class="d-flex align-items-center">
+						<a href="{{home}}">Home<span class="lnr lnr-arrow-right"></span></a>
+						<a href="{{category}}">Login/Register</a>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</section> -->
+	<!-- End Banner Area -->
+
+	<!--================Login Box Area =================-->
+	<section class="login_box_area section_gap">
+		<div class="container">
+			<div class="row">
+				<!-- <div class="col-lg-6">
+					<div class="login_box_img">
+						<img class="img-fluid" src="{% static 'img/login.jpg' %}" alt="">
+						<div class="hover">
+							<h4>New to our website?</h4>
+							<p>There are advances being made in science and technology everyday, and a good example of this is the</p>
+							<a class="primary-btn" href="registration.html">Create an Account</a>
+						</div>
+					</div>
+				</div> -->
+                <section class="auth-section">
+					<div class="auth-container">
+						<div class="auth-form-container">
+							{% load socialaccount %}
+							<h1 class="auth-title">Baka Store</h1>
+							<p class="auth-subtitle">Create your account and start exploring</p>
+							<form class="auth-form" action="{% url 'user-signup' %}" method="post" id="signupForm">
+								{% csrf_token %}
+								<div class="form-group">
+									<label for="first_name">First Name</label>
+									<input type="text" id="first_name" name="first_name" value="{{ form.first_name.value|default_if_none:'' }}">
+									{% if form.first_name.errors %}
+										<div class="error-message">
+											{% for error in form.first_name.errors %}
+												<p>{{ error }}</p>
+											{% endfor %}
+										</div>
+									{% endif %}
+								</div>
+								<div class="form-group">
+									<label for="last_name">Last Name</label>
+									<input type="text" id="last_name" name="last_name" value="{{ form.last_name.value|default_if_none:'' }}">
+									{% if form.last_name.errors %}
+										<div class="error-message">
+											{% for error in form.last_name.errors %}
+												<p>{{ error }}</p>
+											{% endfor %}
+										</div>
+									{% endif %}
+								</div>
+								<div class="form-group">
+									<label for="email">Email</label>
+									<input type="email" id="email" name="email" value="{{ form.email.value|default_if_none:'' }}" class="form-control{% if form.email.errors %} is-invalid{% endif %}">
+									{% if form.email.errors %}
+										<div class="invalid-feedback">
+											{% for error in form.email.errors %}
+												<p>{{ error }}</p>
+											{% endfor %}
+										</div>
+									{% endif %}
+								</div>
+								<div class="form-group">
+									<label for="password1">Password</label>
+									<div class="password-input">
+										<input type="password" id="password1" name="password1">
+										<button type="button" class="password-toggle" onclick="togglePassword('password1')">
+											<i class="fas fa-eye"></i>
+										</button>
+									</div>
+									{% if form.password1.errors %}
+										<div class="error-message">
+											{% for error in form.password1.errors %}
+												<p>{{ error }}</p>
+											{% endfor %}
+										</div>
+									{% endif %}
+								</div>
+								<div class="form-group">
+									<label for="password2">Confirm Password</label>
+									<div class="password-input">
+										<input type="password" id="password2" name="password2">
+										<button type="button" class="password-toggle" onclick="togglePassword('password2')">
+											<i class="fas fa-eye"></i>
+										</button>
+									</div>
+									{% if form.password2.errors %}
+										<div class="error-message">
+											{% for error in form.password2.errors %}
+												<p>{{ error }}</p>
+											{% endfor %}
+										</div>
+									{% endif %}
+								</div>
+								<button type="submit" class="btn btn-primary btn-block">Create Account</button>
+								
+								{% if form.non_field_errors %}
+									<div class="error-message">
+										{% for error in form.non_field_errors %}
+											<p>{{ error }}</p>
+										{% endfor %}
+									</div>
+								{% endif %}
+							</form>
+				
+							<div class="auth-links">
+								<a href="{% url 'user-login' %}" class="auth-link">Already have an account? Log in</a>
+							</div>
+							<div class="divider">
+								<span style="margin-left: 16.5rem;">or</span>
+							</div>
+							<div class="social-login">
+								<a href="{% provider_login_url 'google' %}?next=/" class="btn btn-social btn-google">
+									<img src="{% static 'img/google.png' %}" alt="Google">
+									Sign up with Google
+								</a>
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+		</div>
+	</section>
+	<!--================End Signup Box Area =================-->
+
+	<!-- start footer Area -->
+	<footer class="footer-area section_gap">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg">
+					<div class="single-footer-widget about-us-widget">
+						<h6>About Us</h6>
+						<p>
+							Welcome to Baka Store, your ultimate destination for anime action figures. We are passionate about bringing your favorite characters to life with high-quality figures. Our mission is to provide anime enthusiasts with a wide variety of collectibles, ensuring that every fan can find something they love. At Baka Store, we are committed to delivering exceptional products and customer service. Join us in celebrating the world of anime!
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="footer-bottom d-flex justify-content-center align-items-center flex-wrap">
+				<p class="footer-text m-0">
+					Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Baka Store
+				</p>
+			</div>
+			
+		</div>
+	</footer>
+	<!-- End footer Area -->
+	<!-- <script>
+		$(document).ready(function(){
+			$('#signupForm').submit(function(event){
+				event.preventDefault();
+				$('#otpModal').modal('show');
+			});
+		});
+	</script> -->
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+	<script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/jquery.ajaxchimp.min.js' %}"></script>
+	<script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
+	<script src="{% static 'js/jquery.sticky.js' %}"></script>
+	<script src="{% static 'js/nouislider.min.js' static"></script>
+	<script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+	<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+	<!--gmaps Js-->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
+	<script src="{% static 'js/gmaps.min.js' %}"></script>
+	<script src="{% static 'js/main.js' %}"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	
+	<script>
+		document.addEventListener('DOMContentLoaded', function(){
+			const form = document.getElementById('signupForm');
+			
+			form.addEventListener('submit', function(event){
+				let isValid = true;
+
+				const firstname = document.getElementById('first_name');
+				if(!firstname.value.trim()){
+					showError(firstname,'First name is required');
+					isValid = false;
+				} else {
+					clearError(firstname);
+				}
+
+				const lastname = document.getElementById('last_name');
+				if(!lastname.value.trim()){
+					showError(lastname,'Last name is required');
+					isValid = false;
+				} else {
+					clearError(lastname);
+				}
+
+				const email = document.getElementById('email');
+				if(!email.value.trim()){
+					showError(email,'Email is required');
+					isValid = false;
+				} else if(!isValidEmail(email.value)) {
+					showError(email,'Please enter a valid email address.');
+					isValid = false;
+				} else {
+					clearError(email);
+				}
+
+				const password1 = document.getElementById('password1');
+				const password2 = document.getElementById('password2');
+
+				if(!password1.value) {
+					showError(password1,'Password is required');
+					isValid = false;
+				}else if(password1.value.length < 8) {
+					showError(password1,'Password must be at 8 characters long');
+					isValid = false;
+				}else {
+					clearError(password1)
+				}
+
+				if(!password2.value) {
+					showError(password2,'Confirm password is required');
+					isValid = false;
+				}else if(password1.value !== password2.value) {
+					showError(password2,'Passwords do not match');
+					isValid = false;
+				}else {
+					clearError(password1)
+				}
+
+				if(!isValid){
+					event.preventDefault();
+				}
+			});
+
+			function showError(input, message){
+				const formGroup = input.closest('.form-group');
+				const error = formGroup.querySelector('.error-message') || document.createElement('div');
+				error.className = 'error-message';
+				error.textContent = message;
+				if(!formGroup.querySelector('.error-message')) {
+					formGroup.appendChild(error);
+				}
+				input.classList.remove('is-invalid');
+			}
+
+			function isValidEmail(email){
+				const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+				return re.test(email);
+			}
+		});
+		function togglePassword(inputId) {
+			const passwordInput = document.getElementById(inputId);
+			const toggleBtn = passwordInput.nextElementSibling.querySelector('i');
+			
+			if (passwordInput.type === "password") {
+				passwordInput.type = "text";
+				toggleBtn.classList.replace("fa-eye", "fa-eye-slash");
+			} else {
+				passwordInput.type = "password";
+				toggleBtn.classList.replace("fa-eye-slash", "fa-eye");
+			}
+		}
+
+		document.addEventListener('DOMContentLoaded', function () {
+			var form = document.querySelector('form');
+			form.addEventListener('submit', function (event) {
+				if (!form.checkValidity()) {
+					event.preventDefault();
+					event.stopPropagation();
+				}
+				form.classList.add('was-validated');
+			}, false);
+		}, false);
+	</script>
+</body>
+
+</html>

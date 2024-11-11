@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; color: #333; margin: 20px; }
+        .container { width: 100%; margin: auto; }
+        .header { text-align: center; margin-bottom: 30px; }
+        h1 { font-size: 24px; margin-bottom: 5px; color: #333; }
+        p { font-size: 14px; color: #555; }
+        
+        .summary-table, .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .summary-table th, .summary-table td, 
+        .details-table th, .details-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .summary-table th, .details-table th {
+            background-color: #f8f8f8;
+            font-size: 14px;
+            color: #333;
+        }
+        .summary-table td, .details-table td {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        /* Highlight rows for easier reading */
+        .summary-table tr:nth-child(even), .details-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .summary-header {
+            font-size: 18px;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            color: #444;
+        }
+        
+        /* Additional styling for large figures */
+        .large-figure { font-size: 16px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Sales Report</h1>
+            <p>From: {{ start_date }} To: {{ end_date }}</p>
+        </div>
+        
+        <!-- Summary Section -->
+        <div class="summary-header">Summary of Sales</div>
+        <table class="summary-table">
+            <tr>
+                <th>Total Sales</th>
+                <th>Order Count</th>
+                <th>Total Discount</th>
+                <th>Coupon Discount</th>
+                <th>Overall Discount</th>
+            </tr>
+            <tr>
+                <td class="large-figure">₹{{ total_sales|floatformat:2 }}</td>
+                <td class="large-figure">{{ order_count }}</td>
+                <td class="large-figure">₹{{ total_discount|floatformat:2 }}</td>
+                <td class="large-figure">₹{{ coupon_discount|floatformat:2 }}</td>
+                <td class="large-figure">₹{{ overall_discount|floatformat:2 }}</td>
+            </tr>
+        </table>
+        
+        <!-- Order Details Section -->
+        <div class="summary-header">Detailed Order Breakdown</div>
+        <table class="details-table">
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Total Amount</th>
+                <th>Discount</th>
+                <th>Coupon Discount</th>
+            </tr>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.created_at|date:"Y-m-d" }}</td>
+                <td>₹{{ order.total_amount|floatformat:2 }}</td>
+                <td>₹{{ order.discount|floatformat:2 }}</td>
+                <td>₹{{ order.coupon_discount|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

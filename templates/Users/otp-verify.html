@@ -1,0 +1,349 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zxx" class="no-js">
+
+<head>
+	<!-- Mobile Specific Meta -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Favicon-->
+	<link rel="shortcut icon" href="{% static 'img/logo2.png' %}">
+	<!-- Author Meta -->
+	<meta name="author" content="CodePixar">
+	<!-- Meta Description -->
+	<meta name="description" content="">
+	<!-- Meta Keyword -->
+	<meta name="keywords" content="">
+	<!-- meta character set -->
+	<meta charset="UTF-8">
+	<!-- Site Title -->
+	<title>Baka Store</title>
+
+	<!--
+		CSS
+		============================================= -->
+	<link rel="stylesheet" href="{% static 'css/linearicons.css'%}">
+	<link rel="stylesheet" href="{% static 'css/owl.carousel.css'%}">
+	<link rel="stylesheet" href="{% static 'css/themify-icons.css' %}">
+	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/nice-select.css'%}">
+	<link rel="stylesheet" href="{% static 'css/nouislider.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+	<link rel="stylesheet" href="{% static 'css/main.css' %}">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<style>
+		.disabled-link {
+			pointer-events: none;
+			color: grey;
+		}
+		
+		.enabled-link {
+			pointer-events: auto;
+			color: blue;
+		}
+		.about-us-widget {
+			position: relative;
+			z-index: 1;
+			background: rgba(255, 255, 255, 0.108); 
+			padding: 20px;
+			border-radius: 10px;
+		}
+		
+		.about-us-widget::before,
+		.about-us-widget::after {
+			content: '';
+			position: absolute;
+			z-index: -1;
+			background-size: cover;
+			background-position: center;
+			width: 100px;
+			height: 100px;
+		}
+		
+		.about-us-widget::before {
+			background-image: url('{% static "img/pngegg.png" %}'); 
+			top: -20px;
+			left: -20px;
+		}
+		
+		.about-us-widget::after {
+			background-image: url('{% static "img/naruto.png" %}'); 
+			bottom: -20px;
+			right: -20px;
+		}
+		
+		.about-us-widget::before,
+		.about-us-widget::after {
+			opacity: 0.3; 
+			transform: rotate(-15deg); 
+			border-radius: 50%; 
+		}
+
+		body {
+			background-color: #f0f2f5;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		}
+		.card {
+			border-radius: 1rem;
+			overflow: hidden;
+		}
+		.card-body {
+			background-color: #ffffff;
+		}
+		h2 {
+			color: #333;
+			font-weight: 600;
+		}
+		.otp-input-container {
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: 1rem;
+		}
+		.otp-input {
+			width: 3rem;
+			height: 3rem;
+			font-size: 1.5rem;
+			text-align: center;
+			border: 2px solid #ced4da;
+			border-radius: 0.5rem;
+			outline: none;
+			transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+		}
+		.otp-input:focus {
+			border-color: #007bff;
+			box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+		}
+		.btn-primary {
+			background-color: #007bff;
+			border: none;
+			border-radius: 0.5rem;
+			transition: all 0.3s ease;
+		}
+		.btn-primary:hover {
+			background-color: #0056b3;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
+		.disabled-link {
+			color: #6c757d;
+			pointer-events: none;
+		}
+		#timer {
+			font-size: 0.9rem;
+		}
+		</style>
+</head>
+
+<body>
+	<input type="hidden" id="django-message" data-message="{{ messages.0 }}" data-tags="{{ messages.0.tags }}">
+	<!-- End Banner Area -->
+
+	<!--================Login Box Area =================-->
+	<section class="login_box_area section_gap" style="height: 600px;">
+		<div class="container">
+			<div class="row">
+                <div class="container" style="margin-top: -10rem;">
+					<div class="row justify-content-center align-items-center min-vh-100">
+						<div class="col-md-6 col-lg-5">
+							<div class="card shadow-lg border-0">
+								<div class="card-body p-5">
+									<div id="otp-container" data-countdown="{{ countdown }}">
+										<h2 class="text-center mb-4">Verify Your Account</h2>
+										<p class="text-center text-muted mb-4">We've sent a 6-digit code to your email. Enter the code below to confirm your email address.</p>
+										
+										{% if error %}
+										<div class="alert alert-danger" role="alert">
+											{{error}}
+										</div>
+										{% endif %}
+										
+										<form action="{% url 'verify-otp' %}" method="post" id="verifyOTPForm" novalidate>
+											{% csrf_token %}
+											<div class="otp-input-container mb-4">
+												<input type="text" class="otp-input" maxlength="1" autofocus>
+												<input type="text" class="otp-input" maxlength="1">
+												<input type="text" class="otp-input" maxlength="1">
+												<input type="text" class="otp-input" maxlength="1">
+												<input type="text" class="otp-input" maxlength="1">
+												<input type="text" class="otp-input" maxlength="1">
+												<input type="hidden" id="otp" name="otp" value="{{ form.otp.value|default_if_none:'' }}">
+											</div>
+											<button type="submit" class="btn btn-primary btn-lg btn-block">Verify OTP</button>
+										</form>
+										
+										<div class="text-center mt-4">
+											<p id="timer" class="text-muted mb-2"></p>
+											<a id="resend-link" href="#" class="btn btn-link disabled-link">Resend OTP</a>
+										</div>
+										
+										{% if form.errors %}
+										<div class="alert alert-danger mt-3">
+											<ul class="mb-0">
+												{% for field in form %}
+													{% for error in field.errors %}
+														<li>{{ error }}</li>
+													{% endfor %}
+												{% endfor %}
+												{% for error in form.non_field_errors %}
+													<li>{{ error }}</li>
+												{% endfor %}
+											</ul>
+										</div>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>								
+            </div>
+			</div>
+		</div>
+	</section>
+
+	<!--================End Login Box Area =================-->
+
+	<!-- start footer Area -->
+	<footer class="footer-area section_gap">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg">
+					<div class="single-footer-widget about-us-widget">
+						<h6>About Us</h6>
+						<p>
+							Welcome to Baka Store, your ultimate destination for anime action figures. We are passionate about bringing your favorite characters to life with high-quality figures. Our mission is to provide anime enthusiasts with a wide variety of collectibles, ensuring that every fan can find something they love. At Baka Store, we are committed to delivering exceptional products and customer service. Join us in celebrating the world of anime!
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="footer-bottom d-flex justify-content-center align-items-center flex-wrap">
+				<p class="footer-text m-0">
+					Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Baka Store
+				</p>
+			</div>
+			
+		</div>
+	</footer>	<!-- End footer Area -->
+	
+		
+		
+				
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+	<script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/jquery.ajaxchimp.min.js' %}"></script>
+	<script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
+	<script src="{% static 'js/jquery.sticky.js' %}"></script>
+	<script src="{% static 'js/nouislider.min.js' %}"></script>
+	<script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+	<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+	<!--gmaps Js-->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
+	<script src="{% static 'js/gmaps.min.js' %}"></script>
+	<script src="{% static 'js/main.js' %}"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			const container = $('#otp-container');
+			let countdown = parseInt(container.data('countdown'), 10);
+			const timerElement = $('#timer');
+			const resendLink = $('#resend-link');
+			const otpInputs = $('.otp-input');
+			const hiddenOtpInput = $('#otp');
+		
+			function formatTime(seconds) {
+				const minutes = Math.floor(seconds / 60);
+				const remainingSeconds = seconds % 60;
+				return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+			}
+		
+			function updateTimer() {
+				if (countdown > 0) {
+					const formattedTime = formatTime(countdown);
+					timerElement.text(`Resend OTP in ${formattedTime}`);
+					resendLink.addClass('disabled-link');
+					countdown--;
+					setTimeout(updateTimer, 1000);
+				} else {
+					timerElement.text('');
+					resendLink.removeClass('disabled-link');
+				}
+			}
+		
+			updateTimer();
+		
+			resendLink.on('click', function(e) {
+				e.preventDefault();
+				if (!$(this).hasClass('disabled-link')) {
+					$.ajax({
+						url: '{% url "resend-otp" %}',
+						method: 'GET',
+						success: function(response) {
+							if (response.success) {
+								countdown = 120; // 2 minutes
+								updateTimer();
+								Swal.fire({
+									icon: 'success',
+									title: 'OTP Resent',
+									text: response.message,
+									timer: 3000,
+									timerProgressBar: true
+								});
+							} else {
+								Swal.fire({
+									icon: 'error',
+									title: 'Oops...',
+									text: response.message
+								});
+							}
+						},
+						error: function() {
+							Swal.fire({
+								icon: 'error',
+								title: 'Oops...',
+								text: 'An error occurred. Please try again.'
+							});
+						}
+					});
+				}
+			});
+		
+			// OTP input handling
+			otpInputs.on('input', function() {
+				let value = $(this).val();
+				if (value.length === 1) {
+					$(this).next('.otp-input').focus();
+				}
+				updateHiddenOtpInput();
+			});
+		
+			otpInputs.on('keydown', function(e) {
+				if (e.key === 'Backspace' && $(this).val() === '') {
+					$(this).prev('.otp-input').focus();
+				}
+			});
+		
+			function updateHiddenOtpInput() {
+				hiddenOtpInput.val(Array.from(otpInputs).map(input => input.value).join(''));
+			}
+		
+			// Show SweetAlert2 notification if there's a success message
+			const djangoMessage = $('#django-message');
+			const message = djangoMessage.data('message');
+			const tags = djangoMessage.data('tags');
+		
+			if (message && tags === 'success') {
+				Swal.fire({
+					icon: 'success',
+					title: 'Success!',
+					text: message,
+					timer: 3000,
+					timerProgressBar: true
+				});
+			}
+		});	
+	</script>
+</body>
+
+</html>
