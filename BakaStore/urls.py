@@ -32,6 +32,7 @@ urlpatterns = [
     path('Wallet/',include('Wallet.urls')),
     path('Coupon/',include('Coupons.urls')),
     path('Wishlist/',include('Wishlist.urls')),
+    path('Reviews/',include('Reviews.urls')),
 ]
 
 if settings.DEBUG:

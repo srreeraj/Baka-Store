@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'Wallet',
     'Coupons',
     'Wishlist',
+    'Reviews',
 ]
 
 SOCIALACCOUNT_PROVIDERS = {

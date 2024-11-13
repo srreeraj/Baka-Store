@@ -533,121 +533,97 @@
 				</div>
 				<div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
 					<div class="row">
+						<!-- Overall Rating & Rating Distribution -->
 						<div class="col-lg-6">
 							<div class="row total_rate">
 								<div class="col-6">
 									<div class="box_total">
 										<h5>Overall</h5>
-										<h4>4.0</h4>
-										<h6>(03 Reviews)</h6>
+										<h4>{{ selected_variant_info.average_rating|default:"0" }}</h4>
+										<h6>({{ selected_variant_info.review_count }} Reviews)</h6>
 									</div>
 								</div>
 								<div class="col-6">
 									<div class="rating_list">
-										<h3>Based on 3 Reviews</h3>
+										<h3>Based on {{ selected_variant_info.review_count }} Reviews</h3>
 										<ul class="list">
-											<li><a href="#">5 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-											<li><a href="#">4 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-											<li><a href="#">3 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-											<li><a href="#">2 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-											<li><a href="#">1 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
+											{% for star, count in selected_variant_info.rating_distribution.items %}
+											<li>
+												<a href="#">{{ star }} Star
+													{% for i in "12345"|slice:":star" %} <!-- Filled Stars -->
+														<i class="fa fa-star"></i>
+													{% endfor %}
+													{% for i in "12345"|slice:star %} <!-- Empty Stars -->
+														<i class="fa fa-star-o"></i>
+													{% endfor %}
+													{{ count }}
+												</a>
+											</li>
+											{% endfor %}
 										</ul>
 									</div>
 								</div>
 							</div>
+				
+							<!-- List of Reviews -->
 							<div class="review_list">
+								{% for review in reviews %}
 								<div class="review_item">
 									<div class="media">
 										<div class="d-flex">
-											<img src="{% static 'img/product/review-1.png' %}" alt="">
+											<img src="{{ review.user.profile_image_url }}" alt="Reviewer Profile Picture">
 										</div>
 										<div class="media-body">
-											<h4>Blake Ruiz</h4>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
+											<h4>{{ review.user.name }}</h4>
+											<!-- Display filled and empty stars based on review rating -->
+											{% for i in "12345"|slice:":review.rating" %}
+												<i class="fa fa-star"></i>
+											{% endfor %}
+											{% for i in "12345"|slice:review.rating %}
+												<i class="fa fa-star-o"></i>
+											{% endfor %}
 										</div>
 									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-										commodo</p>
+									<p>{{ review.comment }}</p>
 								</div>
-								<div class="review_item">
-									<div class="media">
-										<div class="d-flex">
-											<img src="{% static 'img/product/review-2.png' %}" alt="">
-										</div>
-										<div class="media-body">
-											<h4>Blake Ruiz</h4>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-										</div>
-									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-										commodo</p>
-								</div>
-								<div class="review_item">
-									<div class="media">
-										<div class="d-flex">
-											<img src="{% static 'img/product/review-3.png' %}" alt="">
-										</div>
-										<div class="media-body">
-											<h4>Blake Ruiz</h4>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-										</div>
-									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-										commodo</p>
-								</div>
+								{% endfor %}
 							</div>
 						</div>
+				
+						<!-- Add a Review Form -->
 						<div class="col-lg-6">
 							<div class="review_box">
 								<h4>Add a Review</h4>
 								<p>Your Rating:</p>
-								<ul class="list">
-									<li><a href="#"><i class="fa fa-star"></i></a></li>
-									<li><a href="#"><i class="fa fa-star"></i></a></li>
-									<li><a href="#"><i class="fa fa-star"></i></a></li>
-									<li><a href="#"><i class="fa fa-star"></i></a></li>
-									<li><a href="#"><i class="fa fa-star"></i></a></li>
-								</ul>
-								<p>Outstanding</p>
-								<form class="row contact_form" action="contact_process.php" method="post" id="contactForm" novalidate="novalidate">
+								<form class="row contact_form" action="#" method="post" id="reviewForm" novalidate="novalidate">
+									{% csrf_token %}
+									<!-- Star rating input -->
+									<ul class="list">
+										{% for i in "12345" %}
+										<li>
+											<input type="radio" id="star{{ i }}" name="rating" value="{{ i }}">
+											<label for="star{{ i }}"><i class="fa fa-star"></i></label>
+										</li>
+										{% endfor %}
+									</ul>
 									<div class="col-md-12">
 										<div class="form-group">
-											<input type="text" class="form-control" id="name" name="name" placeholder="Your Full name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your Full name'">
+											<input type="text" class="form-control" id="name" name="name" placeholder="Your Full name" required>
 										</div>
 									</div>
 									<div class="col-md-12">
 										<div class="form-group">
-											<input type="email" class="form-control" id="email" name="email" placeholder="Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address'">
+											<input type="email" class="form-control" id="email" name="email" placeholder="Email Address" required>
 										</div>
 									</div>
 									<div class="col-md-12">
 										<div class="form-group">
-											<input type="text" class="form-control" id="number" name="number" placeholder="Phone Number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Phone Number'">
+											<input type="text" class="form-control" id="number" name="phone_number" placeholder="Phone Number">
 										</div>
 									</div>
 									<div class="col-md-12">
 										<div class="form-group">
-											<textarea class="form-control" name="message" id="message" rows="1" placeholder="Review" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Review'"></textarea></textarea>
+											<textarea class="form-control" name="comment" id="message" rows="1" placeholder="Review" required></textarea>
 										</div>
 									</div>
 									<div class="col-md-12 text-right">
@@ -657,7 +633,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</div>				
 			</div>
 		</div>
 	</section>

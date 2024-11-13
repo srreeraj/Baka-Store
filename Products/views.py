@@ -9,55 +9,92 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Prefetch
 from django.contrib import messages
 from Admin.views import admin_required
+from Reviews.models import Review
+from Reviews.forms import ReviewForm
 
 @login_required
 @never_cache
 def product_details(request, pk):
     product = get_object_or_404(Product, pk=pk)
     variants = product.variants.all().exclude(size='Default')
-    selected_variant = variants.first()
-    
-    # Apply discounts to variants
+    selected_variant = variants.first() if variants else None
+
     discounted_variants = []
     selected_variant_info = None
+
+    # Calculate discounts for the product first
     for variant in variants:
         original_price = variant.price
         discounted_price = product.get_discounted_price(original_price)
-        
-        # Apply additional discounts from offers
-        if product.offer_type == 'percentage':
-            discounted_price *= (1 - product.offer_value / 100)
-        elif product.offer_type == 'fixed':
-            discounted_price = max(0, discounted_price - product.offer_value)
-        
-        if product.category.offer_type == 'percentage':
-            discounted_price *= (1 - product.category.offer_value / 100)
-        elif product.category.offer_type == 'fixed':
-            discounted_price = max(0, discounted_price - product.category.offer_value)
-        
+
         discounted_price = round(discounted_price, 2)
-        
+
         variant_info = {
             'variant': variant,
             'original_price': original_price,
             'discounted_price': discounted_price,
-            'discount_percentage': round(((original_price - discounted_price) / original_price) * 100, 2) if discounted_price < original_price else 0
+            'discount_percentage': round(((original_price - discounted_price) / original_price) * 100, 2) if discounted_price < original_price else 0,
+            'average_rating': variant.get_average_rating(),
+            'rating_distribution': variant.get_rating_distribution(),
+            'review_count': variant.get_review_count(),
+            'verified_reviews_count': variant.get_verified_reviews_count()
         }
         discounted_variants.append(variant_info)
+
+        # Assign selected_variant_info for the selected variant
         if variant == selected_variant:
             selected_variant_info = variant_info
-    
+
     active_offer = product.get_active_offer()
 
+    # Handle reviews for the selected variant
+    reviews = Review.objects.filter(variant=selected_variant).select_related('user').order_by('-created_at')
+    paginator = Paginator(reviews, 5)
+    page = request.GET.get('page')
+    reviews_page = paginator.get_page(page)
+
+    if not reviews.exists():
+        messages.info(request, "No reviews available for this product.")
+    
+    # Handle review form
+    user_can_review = request.user.is_authenticated and selected_variant and selected_variant.can_user_review(request.user)
+    user_review = None
+    review_form = None
+
+    if user_can_review:
+        user_review = selected_variant.get_user_review(request.user)
+        if not user_review:
+            review_form = ReviewForm()
+
+    if request.method == 'POST' and user_can_review:
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user
+            review.product = product
+            review.variant = selected_variant
+            review.save()
+            messages.success(request, "Your review has been submitted successfully!")
+            return redirect('product_details', pk=product.id)
+        else:
+            messages.error(request, "There was an error with your review. Please try again.")
+    
     context = {
         'product': product,
         'variants': discounted_variants,
         'active_offer': active_offer,
         'selected_variant': selected_variant,
         'selected_variant_info': selected_variant_info,
+        'reviews': reviews_page,
+        'user_can_review': user_can_review,
+        'user_review': user_review,
+        'review_form': review_form,
+        'product_id': product.id,  # Ensure product ID is passed
+        'variant_id': selected_variant.id if selected_variant else None,  # Ensure variant ID is passed
     }
-    
+
     return render(request, 'Users/product_detail.html', context)
+
 
 @admin_required
 @never_cache
