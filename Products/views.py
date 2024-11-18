@@ -15,6 +15,7 @@ from Reviews.forms import ReviewForm
 @login_required
 @never_cache
 def product_details(request, pk):
+    # Fetch product and its variants
     product = get_object_or_404(Product, pk=pk)
     variants = product.variants.all().exclude(size='Default')
     selected_variant = variants.first() if variants else None
@@ -22,40 +23,71 @@ def product_details(request, pk):
     discounted_variants = []
     selected_variant_info = None
 
-    # Calculate discounts for the product first
+    # Prepare discounted variants data
     for variant in variants:
         original_price = variant.price
         discounted_price = product.get_discounted_price(original_price)
-
-        discounted_price = round(discounted_price, 2)
+        discount_percentage = (
+            round(((original_price - discounted_price) / original_price) * 100, 2)
+            if discounted_price < original_price else 0
+        )
 
         variant_info = {
             'variant': variant,
             'original_price': original_price,
             'discounted_price': discounted_price,
-            'discount_percentage': round(((original_price - discounted_price) / original_price) * 100, 2) if discounted_price < original_price else 0,
+            'discount_percentage': discount_percentage,
             'average_rating': variant.get_average_rating(),
             'rating_distribution': variant.get_rating_distribution(),
             'review_count': variant.get_review_count(),
-            'verified_reviews_count': variant.get_verified_reviews_count()
+            'verified_reviews_count': variant.get_verified_reviews_count(),
         }
         discounted_variants.append(variant_info)
 
-        # Assign selected_variant_info for the selected variant
         if variant == selected_variant:
+            # Precompute star information for selected variant
+            average_rating = variant_info['average_rating']
+            full_stars = int(average_rating)
+            half_star = 1 if average_rating % 1 >= 0.5 else 0
+            empty_stars = 5 - full_stars - half_star
+
+            variant_info['stars'] = {
+                'full': full_stars,
+                'half': half_star,
+                'empty': empty_stars,
+            }
+
             selected_variant_info = variant_info
 
+    # Precompute rating distribution as a list for easy use in the template
+    rating_distribution = []
+    if selected_variant_info:
+        distribution_dict = selected_variant_info['rating_distribution']
+        for star in range(5, 0, -1):  # Loop from 5 stars to 1 star
+            count = distribution_dict.get(str(star), 0)
+            rating_distribution.append({'star': star, 'count': count})
+
+    selected_variant_info['rating_distribution_list'] = rating_distribution
+
+    # Get active offer
     active_offer = product.get_active_offer()
 
     # Handle reviews for the selected variant
-    reviews = Review.objects.filter(variant=selected_variant).select_related('user').order_by('-created_at')
-    paginator = Paginator(reviews, 5)
-    page = request.GET.get('page')
-    reviews_page = paginator.get_page(page)
+    if selected_variant:
+        reviews = Review.objects.filter(variant=selected_variant).select_related('user').order_by('-created_at')
+        paginator = Paginator(reviews, 5)
+        page = request.GET.get('page', 1)
+        try:
+            reviews_page = paginator.get_page(page)
+        except EmptyPage:
+            reviews_page = paginator.page(paginator.num_pages)
+    else:
+        reviews = None
+        reviews_page = None
 
-    if not reviews.exists():
+    if reviews and not reviews.exists():
         messages.info(request, "No reviews available for this product.")
-    
+
     # Handle review form
     user_can_review = request.user.is_authenticated and selected_variant and selected_variant.can_user_review(request.user)
     user_review = None
@@ -78,7 +110,7 @@ def product_details(request, pk):
             return redirect('product_details', pk=product.id)
         else:
             messages.error(request, "There was an error with your review. Please try again.")
-    
+
     context = {
         'product': product,
         'variants': discounted_variants,
@@ -89,12 +121,12 @@ def product_details(request, pk):
         'user_can_review': user_can_review,
         'user_review': user_review,
         'review_form': review_form,
-        'product_id': product.id,  # Ensure product ID is passed
-        'variant_id': selected_variant.id if selected_variant else None,  # Ensure variant ID is passed
+        'product_id': product.id,
+        'variant_id': selected_variant.id if selected_variant else None,
+        'rating_distribution': rating_distribution,
     }
 
     return render(request, 'Users/product_detail.html', context)
-
 
 @admin_required
 @never_cache
