@@ -294,7 +294,7 @@ def delete_category(request,pk):
     current_page = request.GET.get('page', 1)
     if request.method == 'POST':
         try:
-            with transaction.atomic(): # Use transaction to ensure all oprations succeed or none do
+            with transaction.atomic():
                 #Soft delete all related products
                 category.product_set.filter(is_delete = False).update(
                     is_delete = True,

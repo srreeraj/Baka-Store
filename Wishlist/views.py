@@ -9,10 +9,6 @@ from Products.models import Product,ProductVariant
 def wishlist(request):
     wishlist_items = Wishlist.objects.filter(user = request.user).prefetch_related('product','product__variants')
 
-    print(f"Wishlist items found : {wishlist_items.count()}")
-    for item in wishlist_items:
-        print(f" - Product: {item.product.name} (ID : {item.product.id})")
-
         
     context = {
         'wishlist_items' : wishlist_items
@@ -21,10 +17,7 @@ def wishlist(request):
 
 def add_to_wishlist(request, product_id):
     product = get_object_or_404(Product, id = product_id)
-    print(f"Adding product {product.id} to wishlist for user {request.user.id}")
     wishlist_item , created = Wishlist.objects.get_or_create(user = request.user,product =product)
-
-    print(f"Wishlist item created : {created}, User: {request.user.email}, Product: {product.name}")
 
     if created :
         return JsonResponse({'success' : True, 'message' : 'Product added to wishlist.'})

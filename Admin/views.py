@@ -35,16 +35,13 @@ def admin_login(request):
         if form.is_valid():
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
-            print(f"Submitted email: {email}, Submitted password: {password}")
-            print(f"Expected email: {settings.ADMIN_EMAIL}, Expected password: {settings.ADMIN_PASSWORD}")
             if email == settings.ADMIN_EMAIL and password == settings.ADMIN_PASSWORD:
                 request.session['is_admin'] = True
-                print("Login successful, redirecting to dashboard.")
                 return redirect(reverse('dashboard'))
             else:
                 messages.error(request, 'Invalid Email and Password')
         else:
-            print("form is not valid")
+            messages.error(request, 'Invalid Form')
     else:
         form = AdminLoginForm()
     return render(request,'Admin/admin_login.html', {'form' : form})

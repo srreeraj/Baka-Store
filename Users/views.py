@@ -35,7 +35,6 @@ def Login(request):
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
 
-            print(f"Trying to  authenticate user with email : {email} , and password : {password}")
 
             user = authenticate(request, email = email , password = password)
 
@@ -83,7 +82,6 @@ def Signup(request):
             request.session['otp_created_at'] = timezone.now().isoformat()
             print(f"Generated OTP: {otp}") 
             send_signup_email(email, otp)
-            print(f"Signup session data: {request.session.items()}")
             messages.success(request, "Signup successful! An OTP has been sent to your email.")
             return redirect('verify-otp')
     else:
@@ -91,7 +89,6 @@ def Signup(request):
     return render(request, 'Users/user_signup.html', {'form': form})
 
 def home(request):
-    print(f"User authenticated: {request.user.is_authenticated}")
     return render(request,'Users/home.html')
 
 @never_cache
@@ -127,7 +124,6 @@ def verifyOTP(request):
                 return redirect('user-login')
             
         else:
-            print('Invalid OTP')
             if otp_created_at:
                 countdown = max(0,int((otp_created_at + timezone.timedelta(minutes=2)- timezone.now()).total_seconds()))
                 

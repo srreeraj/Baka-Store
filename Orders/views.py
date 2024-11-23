@@ -16,7 +16,6 @@ from xhtml2pdf import pisa  # Import xhtml2pdf
 
 # Create your views here.
 
-logger = logging.getLogger(__name__)
 
 
 def order_history(request):
@@ -84,14 +83,11 @@ def order_detail_users(request,order_id):
     return render(request, 'Users/order_detail.html', context)
 
 def update_order_status(request, order_id):
-    logger.debug(f"Received update request for order {order_id}")
-    logger.debug(f"Request body: {request.body}")
     
     order = get_object_or_404(Order, id=order_id)
     try:
         data = json.loads(request.body)
         status = data.get('status')
-        logger.debug(f"Parsed status: {status}")
         
         valid_statuses = [choice[0] for choice in Order.STATUS_CHOICE]
         if status in valid_statuses:
@@ -101,16 +97,12 @@ def update_order_status(request, order_id):
                 order.payment_status = 'PAID'
 
             order.save()
-            logger.debug(f"Order {order_id} status updated to {status}")
             return JsonResponse({'success': True})
         else:
-            logger.warning(f"Invalid status received: {status}")
             return JsonResponse({'success': False, 'error': 'Invalid Status'}, status=400)
     except json.JSONDecodeError:
-        logger.error("Failed to parse JSON from request body")
         return JsonResponse({'success': False, 'error': 'Invalid JSON'}, status=400)
     except Exception as e:
-        logger.exception("Unexpected error in update_order_status")
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
     
 
